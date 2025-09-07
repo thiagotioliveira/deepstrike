@@ -1,0 +1,243 @@
+openapi: 3.0.3
+info:
+  title: DeepStrike - Battleship API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+  /api/games:
+    post:
+      summary: Create a new game
+      operationId: createGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - hostPlayerId
+              properties:
+                hostPlayerId:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Game created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+
+    get:
+      summary: List all games (game_summary)
+      operationId: listGames
+      responses:
+        '200':
+          description: List of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameSummaryResponse'
+
+  /api/games/{gameId}/join:
+    post:
+      summary: Player joins the game
+      operationId: joinGame
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - playerId
+              properties:
+                playerId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Player joined the game
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+
+  /api/games/{gameId}/fleet:
+    post:
+      summary: Place player's fleet
+      operationId: placeFleet
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - playerId
+                - ships
+              properties:
+                playerId:
+                  type: string
+                  format: uuid
+                ships:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Ship'
+      responses:
+        '200':
+          description: Fleet placed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+
+  /api/games/{gameId}/ready:
+    post:
+      summary: Mark player as ready
+      operationId: markPlayerReady
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - playerId
+              properties:
+                playerId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Player ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+
+  /api/games/{gameId}/shots:
+    post:
+      summary: Shoot at opponent's coordinate
+      operationId: shootAtCoordinate
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - playerId
+                - target
+              properties:
+                playerId:
+                  type: string
+                  format: uuid
+                target:
+                  $ref: '#/components/schemas/Coordinate'
+      responses:
+        '200':
+          description: Shot resolved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+
+components:
+  schemas:
+    GameResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+        currentTurn:
+          type: string
+          format: uuid
+        winner:
+          type: string
+          format: uuid
+
+    GameSummaryResponse:
+      type: object
+      properties:
+        gameId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        hostPlayerId:
+          type: string
+          format: uuid
+        opponentPlayerId:
+          type: string
+          format: uuid
+          nullable: true
+        currentTurnPlayerId:
+          type: string
+          format: uuid
+          nullable: true
+        winnerPlayerId:
+          type: string
+          format: uuid
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+
+    Coordinate:
+      type: object
+      properties:
+        x:
+          type: integer
+        y:
+          type: integer
+
+    Ship:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT]
+        start:
+          $ref: '#/components/schemas/Coordinate'
+        orientation:
+          type: string
+          enum: [HORIZONTAL, VERTICAL]
