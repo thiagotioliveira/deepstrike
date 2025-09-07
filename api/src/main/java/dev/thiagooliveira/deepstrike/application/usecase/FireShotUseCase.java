@@ -1,15 +1,18 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.FireShotCommand;
-import dev.thiagooliveira.deepstrike.application.eventstore.EventStore;
+import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.Game;
+import org.springframework.context.ApplicationEventPublisher;
 
 public class FireShotUseCase {
 
   private final EventStore eventStore;
+  private final ApplicationEventPublisher publisher;
 
-  public FireShotUseCase(EventStore eventStore) {
+  public FireShotUseCase(EventStore eventStore, ApplicationEventPublisher publisher) {
     this.eventStore = eventStore;
+    this.publisher = publisher;
   }
 
   public Game handle(FireShotCommand command) {
@@ -25,6 +28,7 @@ public class FireShotUseCase {
     var newEvents = game.getPendingEvents();
 
     eventStore.append(game.getId().value(), newEvents, game.getVersion() - newEvents.size());
+    newEvents.forEach(publisher::publishEvent);
 
     game.markEventsCommitted();
     return game;

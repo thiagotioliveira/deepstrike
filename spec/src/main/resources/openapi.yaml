@@ -198,27 +198,12 @@ components:
     GameSummaryResponse:
       type: object
       properties:
-        gameId:
+        id:
           type: string
           format: uuid
         status:
           type: string
-        hostPlayerId:
-          type: string
-          format: uuid
-        opponentPlayerId:
-          type: string
-          format: uuid
-          nullable: true
-        currentTurnPlayerId:
-          type: string
-          format: uuid
-          nullable: true
-        winnerPlayerId:
-          type: string
-          format: uuid
-          nullable: true
-        updatedAt:
+        createdAt:
           type: string
           format: date-time
 

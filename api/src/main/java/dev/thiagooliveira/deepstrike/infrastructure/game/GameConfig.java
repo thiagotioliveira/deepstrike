@@ -1,7 +1,8 @@
 package dev.thiagooliveira.deepstrike.infrastructure.game;
 
-import dev.thiagooliveira.deepstrike.application.eventstore.EventStore;
+import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.application.usecase.*;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,27 +10,32 @@ import org.springframework.context.annotation.Configuration;
 public class GameConfig {
 
   @Bean
-  public CreateGameUseCase createGameUseCase(EventStore eventStore) {
-    return new CreateGameUseCase(eventStore);
+  public CreateGameUseCase createGameUseCase(
+      EventStore eventStore, ApplicationEventPublisher publisher) {
+    return new CreateGameUseCase(eventStore, publisher);
   }
 
   @Bean
-  public JoinGameUseCase joinGameUseCase(EventStore eventStore) {
-    return new JoinGameUseCase(eventStore);
+  public JoinGameUseCase joinGameUseCase(
+      EventStore eventStore, ApplicationEventPublisher publisher) {
+    return new JoinGameUseCase(eventStore, publisher);
   }
 
   @Bean
-  public PlaceFleetUseCase placeFleetUseCase(EventStore eventStore) {
-    return new PlaceFleetUseCase(eventStore);
+  public PlaceFleetUseCase placeFleetUseCase(
+      EventStore eventStore, ApplicationEventPublisher publisher) {
+    return new PlaceFleetUseCase(eventStore, publisher);
   }
 
   @Bean
-  public MarkReadyUseCase markReadyUseCase(EventStore eventStore) {
-    return new MarkReadyUseCase(eventStore);
+  public MarkReadyUseCase markReadyUseCase(
+      EventStore eventStore, ApplicationEventPublisher publisher) {
+    return new MarkReadyUseCase(eventStore, publisher);
   }
 
   @Bean
-  public FireShotUseCase fireShotUseCase(EventStore eventStore) {
-    return new FireShotUseCase(eventStore);
+  public FireShotUseCase fireShotUseCase(
+      EventStore eventStore, ApplicationEventPublisher publisher) {
+    return new FireShotUseCase(eventStore, publisher);
   }
 }

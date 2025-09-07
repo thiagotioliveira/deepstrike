@@ -8,7 +8,7 @@ import dev.thiagooliveira.deepstrike.application.command.FireShotCommand;
 import dev.thiagooliveira.deepstrike.domain.Coordinate;
 import dev.thiagooliveira.deepstrike.domain.GameId;
 import dev.thiagooliveira.deepstrike.domain.PlayerId;
-import dev.thiagooliveira.deepstrike.infrastructure.eventstore.EventJpaRepository;
+import dev.thiagooliveira.deepstrike.infrastructure.persistence.eventstore.EventJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

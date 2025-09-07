@@ -1,15 +1,18 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.JoinGameCommand;
-import dev.thiagooliveira.deepstrike.application.eventstore.EventStore;
+import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.Game;
+import org.springframework.context.ApplicationEventPublisher;
 
 public class JoinGameUseCase {
 
   private final EventStore eventStore;
+  private final ApplicationEventPublisher publisher;
 
-  public JoinGameUseCase(EventStore eventStore) {
+  public JoinGameUseCase(EventStore eventStore, ApplicationEventPublisher publisher) {
     this.eventStore = eventStore;
+    this.publisher = publisher;
   }
 
   public Game handle(JoinGameCommand command) {
@@ -22,6 +25,7 @@ public class JoinGameUseCase {
     game.join(command.playerId());
     var newEvents = game.getPendingEvents();
     eventStore.append(game.getId().value(), newEvents, game.getVersion() - newEvents.size());
+    newEvents.forEach(publisher::publishEvent);
 
     game.markEventsCommitted();
     return game;

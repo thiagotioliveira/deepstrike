@@ -10,6 +10,9 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface GameMapper {
 
+  GameSummaryResponse toSummaryResponse(
+      dev.thiagooliveira.deepstrike.domain.GameSummary gameSummary);
+
   GameResponse toResponse(dev.thiagooliveira.deepstrike.domain.Game game);
 
   CreateGameCommand toCreateGameCommand(CreateGameRequest createGameRequest);

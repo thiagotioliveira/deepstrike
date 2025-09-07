@@ -1,15 +1,18 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.MarkReadyCommand;
-import dev.thiagooliveira.deepstrike.application.eventstore.EventStore;
+import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.Game;
+import org.springframework.context.ApplicationEventPublisher;
 
 public class MarkReadyUseCase {
 
   private final EventStore eventStore;
+  private final ApplicationEventPublisher publisher;
 
-  public MarkReadyUseCase(EventStore eventStore) {
+  public MarkReadyUseCase(EventStore eventStore, ApplicationEventPublisher publisher) {
     this.eventStore = eventStore;
+    this.publisher = publisher;
   }
 
   public Game handle(MarkReadyCommand command) {
@@ -25,6 +28,7 @@ public class MarkReadyUseCase {
     var newEvents = game.getPendingEvents();
 
     eventStore.append(game.getId().value(), newEvents, game.getVersion() - newEvents.size());
+    newEvents.forEach(publisher::publishEvent);
 
     game.markEventsCommitted();
     return game;

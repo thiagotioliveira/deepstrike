@@ -1,15 +1,18 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.PlaceFleetCommand;
-import dev.thiagooliveira.deepstrike.application.eventstore.EventStore;
+import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.Game;
+import org.springframework.context.ApplicationEventPublisher;
 
 public class PlaceFleetUseCase {
 
   private final EventStore eventStore;
+  private final ApplicationEventPublisher publisher;
 
-  public PlaceFleetUseCase(EventStore eventStore) {
+  public PlaceFleetUseCase(EventStore eventStore, ApplicationEventPublisher publisher) {
     this.eventStore = eventStore;
+    this.publisher = publisher;
   }
 
   public Game handle(PlaceFleetCommand command) {
@@ -24,6 +27,7 @@ public class PlaceFleetUseCase {
     var newEvents = game.getPendingEvents();
 
     eventStore.append(game.getId().value(), newEvents, game.getVersion() - newEvents.size());
+    newEvents.forEach(publisher::publishEvent);
 
     game.markEventsCommitted();
     return game;

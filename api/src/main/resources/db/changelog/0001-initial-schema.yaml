@@ -47,3 +47,50 @@ databaseChangeLog:
             columns:
               - column:
                   name: aggregate_id
+  - changeSet:
+      id: 002-create-game-summary
+      author: thiagooliveira
+      changes:
+        - createTable:
+            tableName: game_summary
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: host_player
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: opponent_player
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: current_turn
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: winner
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false

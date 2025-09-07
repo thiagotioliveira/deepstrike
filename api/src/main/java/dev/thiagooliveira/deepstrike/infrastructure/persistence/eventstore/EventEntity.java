@@ -1,4 +1,4 @@
-package dev.thiagooliveira.deepstrike.infrastructure.eventstore;
+package dev.thiagooliveira.deepstrike.infrastructure.persistence.eventstore;
 
 import jakarta.persistence.*;
 import java.time.Instant;

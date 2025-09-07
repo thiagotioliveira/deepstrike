@@ -8,7 +8,7 @@ import dev.thiagooliveira.deepstrike.application.command.MarkReadyCommand;
 import dev.thiagooliveira.deepstrike.domain.GameId;
 import dev.thiagooliveira.deepstrike.domain.GameStatus;
 import dev.thiagooliveira.deepstrike.domain.PlayerId;
-import dev.thiagooliveira.deepstrike.infrastructure.eventstore.EventJpaRepository;
+import dev.thiagooliveira.deepstrike.infrastructure.persistence.eventstore.EventJpaRepository;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

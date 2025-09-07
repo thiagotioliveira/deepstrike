@@ -1,7 +1,7 @@
-package dev.thiagooliveira.deepstrike.infrastructure.eventstore;
+package dev.thiagooliveira.deepstrike.infrastructure.persistence.eventstore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.thiagooliveira.deepstrike.application.eventstore.EventStore;
+import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.event.DomainEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class JpaEventStore implements EventStore {
+public class EventStoreAdapter implements EventStore {
 
   private final EventJpaRepository repository;
   private final ObjectMapper objectMapper;
 
-  public JpaEventStore(EventJpaRepository repository, ObjectMapper objectMapper) {
+  public EventStoreAdapter(EventJpaRepository repository, ObjectMapper objectMapper) {
     this.repository = repository;
     this.objectMapper = objectMapper;
   }

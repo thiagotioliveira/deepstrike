@@ -1,4 +1,4 @@
-package dev.thiagooliveira.deepstrike.application.eventstore;
+package dev.thiagooliveira.deepstrike.application.port.outbound;
 
 import dev.thiagooliveira.deepstrike.domain.event.DomainEvent;
 import java.util.List;

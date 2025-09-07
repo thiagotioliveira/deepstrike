@@ -5,7 +5,7 @@ import dev.thiagooliveira.deepstrike.domain.event.*;
 import dev.thiagooliveira.deepstrike.domain.rule.Ruleset;
 import dev.thiagooliveira.deepstrike.domain.ship.Orientation;
 import dev.thiagooliveira.deepstrike.domain.ship.Ship;
-import dev.thiagooliveira.deepstrike.infrastructure.eventstore.EventEntity;
+import dev.thiagooliveira.deepstrike.infrastructure.persistence.eventstore.EventEntity;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
