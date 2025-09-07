@@ -1,5 +1,5 @@
 spring:
-  application.name: deepstrike-api
+  application.name: api
   docker:
     compose:
       enabled: true

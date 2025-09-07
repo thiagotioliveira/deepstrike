@@ -46,11 +46,13 @@
         <swagger-annotations.version>1.6.16</swagger-annotations.version>
         <swagger-annotations.v3.version>2.2.31</swagger-annotations.v3.version>
         <jackson-databind.version>2.20.0</jackson-databind.version>
+        <spotless-maven-plugin.version>2.44.5</spotless-maven-plugin.version>
     </properties>
 
     <modules>
         <module>spec</module>
         <module>api</module>
+        <module>ctl</module>
     </modules>
 
 </project>
