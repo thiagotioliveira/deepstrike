@@ -21,7 +21,7 @@ public interface GameMapper {
 
   PlaceFleetCommand toPlaceFleetCommand(UUID gameId, PlaceFleetRequest placeFleetRequest);
 
-  MarkReadyCommand toMarkReadyCommand(UUID gameId, JoinGameRequest joinGameRequest);
+  MarkReadyCommand toMarkReadyCommand(UUID gameId, MarkPlayerReadyRequest markPlayerReadyRequest);
 
   FireShotCommand toFireShotCommand(UUID gameId, ShootAtCoordinateRequest shootAtCoordinateRequest);
 

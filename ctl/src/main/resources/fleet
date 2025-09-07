@@ -1,0 +1,7 @@
+[
+  { "type": "CARRIER",    "x": 0, "y": 0, "orientation": "HORIZONTAL" },
+  { "type": "BATTLESHIP", "x": 2, "y": 0, "orientation": "HORIZONTAL" },
+  { "type": "DESTROYER",  "x": 4, "y": 0, "orientation": "HORIZONTAL" },
+  { "type": "SUBMARINE",  "x": 6, "y": 0, "orientation": "HORIZONTAL" },
+  { "type": "PATROL_BOAT","x": 8, "y": 0, "orientation": "HORIZONTAL" }
+]

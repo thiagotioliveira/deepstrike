@@ -1,25 +1,34 @@
 package dev.thiagooliveira.deepstrike.application.context;
 
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PlayerContext {
 
-  private static final Path CONTEXT_FILE =
-      Path.of(System.getProperty("user.home"), ".deepstrike", "context");
+  @Value("${app.context-path-folder-name}")
+  private String contextPathFolder;
 
-  private final UUID playerId;
+  private Path CONTEXT_FILE;
 
-  public PlayerContext() {
+  private UUID playerId;
+
+  public PlayerContext() {}
+
+  @PostConstruct
+  public void init() {
+    CONTEXT_FILE = Path.of(System.getProperty("user.home"), contextPathFolder, "context");
     this.playerId = loadOrCreate();
   }
 
   private UUID loadOrCreate() {
+    System.out.println(CONTEXT_FILE);
     try {
       if (!Files.exists(CONTEXT_FILE)) {
         Files.createDirectories(CONTEXT_FILE.getParent());

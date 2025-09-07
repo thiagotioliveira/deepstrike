@@ -33,6 +33,14 @@ paths:
     get:
       summary: List all games (game_summary)
       operationId: listGames
+      parameters:
+        - name: playerId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Filter games where player is host or opponent
       responses:
         '200':
           description: List of games
@@ -59,13 +67,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - playerId
-              properties:
-                playerId:
-                  type: string
-                  format: uuid
+              $ref: '#/components/schemas/JoinGameRequest'
       responses:
         '200':
           description: Player joined the game
@@ -126,13 +128,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - playerId
-              properties:
-                playerId:
-                  type: string
-                  format: uuid
+              $ref: '#/components/schemas/MarkPlayerReadyRequest'
       responses:
         '200':
           description: Player ready
@@ -177,6 +173,22 @@ paths:
 
 components:
   schemas:
+    MarkPlayerReadyRequest:
+      type: object
+      required:
+        - playerId
+      properties:
+        playerId:
+          type: string
+          format: uuid
+    JoinGameRequest:
+      type: object
+      required:
+        - playerId
+      properties:
+        playerId:
+          type: string
+          format: uuid
     GameResponse:
       type: object
       properties:
@@ -221,7 +233,7 @@ components:
         type:
           type: string
           enum: [CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT]
-        start:
+        bow:
           $ref: '#/components/schemas/Coordinate'
         orientation:
           type: string

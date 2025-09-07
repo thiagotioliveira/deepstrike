@@ -1,6 +1,7 @@
 package dev.thiagooliveira.deepstrike.infrastructure.api;
 
 import dev.thiagooliveira.deepstrike.application.usecase.*;
+import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import dev.thiagooliveira.deepstrike.infrastructure.api.dto.*;
 import dev.thiagooliveira.deepstrike.infrastructure.api.mapper.GameMapper;
 import dev.thiagooliveira.deepstrike.infrastructure.game.GameService;
@@ -36,17 +37,20 @@ public class GameApi implements DefaultApi {
   }
 
   @Override
-  public ResponseEntity<List<GameSummaryResponse>> listGames() {
+  public ResponseEntity<List<GameSummaryResponse>> listGames(UUID playerId) {
     return ResponseEntity.ok(
-        gameService.findAll().stream().map(gameMapper::toSummaryResponse).toList());
+        gameService.findAll(new PlayerId(playerId)).stream()
+            .map(gameMapper::toSummaryResponse)
+            .toList());
   }
 
   @Override
   public ResponseEntity<GameResponse> markPlayerReady(
-      UUID gameId, JoinGameRequest joinGameRequest) {
+      UUID gameId, MarkPlayerReadyRequest markPlayerReadyRequest) {
     return ResponseEntity.ok(
         gameMapper.toResponse(
-            gameService.markPlayerReady(gameMapper.toMarkReadyCommand(gameId, joinGameRequest))));
+            gameService.markPlayerReady(
+                gameMapper.toMarkReadyCommand(gameId, markPlayerReadyRequest))));
   }
 
   @Override

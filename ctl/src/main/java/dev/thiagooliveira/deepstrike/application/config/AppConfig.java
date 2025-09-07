@@ -1,5 +1,6 @@
 package dev.thiagooliveira.deepstrike.application.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.springframework.context.annotation.Bean;
@@ -14,5 +15,10 @@ public class AppConfig {
     return () ->
         new AttributedString(
             "deepstrike:>", AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
+  }
+
+  @Bean
+  ObjectMapper objectMapper() {
+    return new ObjectMapper();
   }
 }

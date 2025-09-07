@@ -6,3 +6,5 @@ spring:
       enabled: true
     script:
       enabled: false
+app:
+  context-path-folder-name: ".deepstrike"

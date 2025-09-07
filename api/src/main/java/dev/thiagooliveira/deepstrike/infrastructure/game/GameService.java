@@ -5,6 +5,7 @@ import dev.thiagooliveira.deepstrike.application.port.outbound.GameSummaryReposi
 import dev.thiagooliveira.deepstrike.application.usecase.*;
 import dev.thiagooliveira.deepstrike.domain.Game;
 import dev.thiagooliveira.deepstrike.domain.GameSummary;
+import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +35,8 @@ public class GameService {
     this.gameSummaryRepository = gameSummaryRepository;
   }
 
-  public List<GameSummary> findAll() {
-    return gameSummaryRepository.findAll();
+  public List<GameSummary> findAll(PlayerId playerId) {
+    return gameSummaryRepository.findAll(playerId);
   }
 
   @Transactional
