@@ -1,6 +1,6 @@
 package dev.thiagooliveira.deepstrike.domain;
 
-import static dev.thiagooliveira.deepstrike.infrastructure.TestUtil.createFleet;
+import static dev.thiagooliveira.deepstrike.infrastructure.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.thiagooliveira.deepstrike.domain.event.GameCreated;
@@ -19,8 +19,8 @@ class GameTest {
 
   @BeforeEach
   void setUp() {
-    player1 = PlayerId.newId();
-    player2 = PlayerId.newId();
+    player1 = new PlayerId(PLAYER_ID_1);
+    player2 = new PlayerId(PLAYER_ID_2);
     rules = Ruleset.formation2002();
   }
 

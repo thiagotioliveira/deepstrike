@@ -1,6 +1,9 @@
 package dev.thiagooliveira.deepstrike.infrastructure.api;
 
+import dev.thiagooliveira.deepstrike.application.command.GetGameByIdCommand;
+import dev.thiagooliveira.deepstrike.application.command.GetGamesCommand;
 import dev.thiagooliveira.deepstrike.application.usecase.*;
+import dev.thiagooliveira.deepstrike.domain.GameId;
 import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import dev.thiagooliveira.deepstrike.infrastructure.api.dto.*;
 import dev.thiagooliveira.deepstrike.infrastructure.api.mapper.GameMapper;
@@ -23,48 +26,55 @@ public class GameApi implements DefaultApi {
   }
 
   @Override
-  public ResponseEntity<GameResponse> createGame(CreateGameRequest createGameRequest) {
+  public ResponseEntity<GameCreatedResponse> createGame(CreateGameRequest createGameRequest) {
     var game = gameService.createGame(gameMapper.toCreateGameCommand(createGameRequest));
     return ResponseEntity.created(URI.create("/api/games/" + game.getId().value()))
         .body(gameMapper.toResponse(game));
   }
 
   @Override
-  public ResponseEntity<GameResponse> joinGame(UUID gameId, JoinGameRequest joinGameRequest) {
-    return ResponseEntity.ok(
-        gameMapper.toResponse(
-            gameService.joinGame(gameMapper.toJoinGameCommand(gameId, joinGameRequest))));
+  public ResponseEntity<GameDetailResponse> detail(UUID gameId) {
+    var game =
+        gameService
+            .getGameById(new GetGameByIdCommand(new GameId(gameId)))
+            .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
+    return ResponseEntity.ok(gameMapper.toDetailResponse(game));
   }
 
   @Override
-  public ResponseEntity<List<GameSummaryResponse>> listGames(UUID playerId) {
+  public ResponseEntity<Void> joinGame(UUID gameId, JoinGameRequest joinGameRequest) {
+    gameService.joinGame(gameMapper.toJoinGameCommand(gameId, joinGameRequest));
+    return ResponseEntity.noContent().build();
+  }
+
+  @Override
+  public ResponseEntity<List<GameSummaryResponse>> listGames(String playerId) {
     return ResponseEntity.ok(
-        gameService.findAll(new PlayerId(playerId)).stream()
+        gameService.findAll(new GetGamesCommand(new PlayerId(playerId))).stream()
             .map(gameMapper::toSummaryResponse)
             .toList());
   }
 
   @Override
-  public ResponseEntity<GameResponse> markPlayerReady(
+  public ResponseEntity<Void> markPlayerReady(
       UUID gameId, MarkPlayerReadyRequest markPlayerReadyRequest) {
-    return ResponseEntity.ok(
-        gameMapper.toResponse(
-            gameService.markPlayerReady(
-                gameMapper.toMarkReadyCommand(gameId, markPlayerReadyRequest))));
+    gameService.markPlayerReady(gameMapper.toMarkReadyCommand(gameId, markPlayerReadyRequest));
+    return ResponseEntity.noContent().build();
   }
 
   @Override
-  public ResponseEntity<GameResponse> placeFleet(UUID gameId, PlaceFleetRequest placeFleetRequest) {
+  public ResponseEntity<FleetDeploymentResponse> placeFleet(
+      UUID gameId, PlaceFleetRequest placeFleetRequest) {
     return ResponseEntity.ok(
-        gameMapper.toResponse(
+        gameMapper.toFleetDeploymentResponse(
             gameService.placeFleet(gameMapper.toPlaceFleetCommand(gameId, placeFleetRequest))));
   }
 
   @Override
-  public ResponseEntity<GameResponse> shootAtCoordinate(
+  public ResponseEntity<ShotResultResponse> shootAtCoordinate(
       UUID gameId, ShootAtCoordinateRequest shootAtCoordinateRequest) {
     return ResponseEntity.ok(
-        gameMapper.toResponse(
+        gameMapper.toShotResultResponse(
             gameService.fireShot(gameMapper.toFireShotCommand(gameId, shootAtCoordinateRequest))));
   }
 }

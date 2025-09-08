@@ -21,17 +21,15 @@ paths:
               properties:
                 hostPlayerId:
                   type: string
-                  format: uuid
       responses:
         '201':
           description: Game created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GameResponse'
-
+                $ref: '#/components/schemas/GameCreatedResponse'
     get:
-      summary: List all games (game_summary)
+      summary: List all games
       operationId: listGames
       parameters:
         - name: playerId
@@ -39,8 +37,7 @@ paths:
           required: false
           schema:
             type: string
-            format: uuid
-          description: Filter games where player is host or opponent
+          description: Filter games where player is player1 or player2
       responses:
         '200':
           description: List of games
@@ -51,6 +48,24 @@ paths:
                 items:
                   $ref: '#/components/schemas/GameSummaryResponse'
 
+  /api/games/{gameId}:
+    get:
+      summary: Get by Id
+      operationId: detail
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: game details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameDetailResponse'
   /api/games/{gameId}/join:
     post:
       summary: Player joins the game
@@ -69,13 +84,8 @@ paths:
             schema:
               $ref: '#/components/schemas/JoinGameRequest'
       responses:
-        '200':
+        '204':
           description: Player joined the game
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GameResponse'
-
   /api/games/{gameId}/fleet:
     post:
       summary: Place player's fleet
@@ -99,7 +109,6 @@ paths:
               properties:
                 playerId:
                   type: string
-                  format: uuid
                 ships:
                   type: array
                   items:
@@ -110,7 +119,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GameResponse'
+                $ref: '#/components/schemas/FleetDeploymentResponse'
 
   /api/games/{gameId}/ready:
     post:
@@ -130,13 +139,8 @@ paths:
             schema:
               $ref: '#/components/schemas/MarkPlayerReadyRequest'
       responses:
-        '200':
+        '204':
           description: Player ready
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GameResponse'
-
   /api/games/{gameId}/shots:
     post:
       summary: Shoot at opponent's coordinate
@@ -160,7 +164,6 @@ paths:
               properties:
                 playerId:
                   type: string
-                  format: uuid
                 target:
                   $ref: '#/components/schemas/Coordinate'
       responses:
@@ -169,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GameResponse'
+                $ref: '#/components/schemas/ShotResultResponse'
 
 components:
   schemas:
@@ -180,7 +183,6 @@ components:
       properties:
         playerId:
           type: string
-          format: uuid
     JoinGameRequest:
       type: object
       required:
@@ -188,7 +190,34 @@ components:
       properties:
         playerId:
           type: string
+    GameDetailResponse:
+      type: object
+      properties:
+        id:
+          type: string
           format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+        rules:
+          $ref: '#/components/schemas/Ruleset'
+        player1:
+          $ref: '#/components/schemas/Player'
+        player2:
+          $ref: '#/components/schemas/Player'
+        currentTurn:
+          type: string
+        winner:
+          type: string
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+        board:
+          $ref: '#/components/schemas/PlayerBoard'
     GameResponse:
       type: object
       properties:
@@ -202,10 +231,8 @@ components:
           type: string
         currentTurn:
           type: string
-          format: uuid
         winner:
           type: string
-          format: uuid
 
     GameSummaryResponse:
       type: object
@@ -238,3 +265,100 @@ components:
         orientation:
           type: string
           enum: [HORIZONTAL, VERTICAL]
+    ShipPlaced:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT ]
+        footprint:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coordinate'
+        bow:
+          $ref: '#/components/schemas/Coordinate'
+        orientation:
+          type: string
+          enum: [ HORIZONTAL, VERTICAL ]
+        size:
+          type: integer
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coordinate'
+    ShipSpec:
+      type: object
+      properties:
+        size:
+          type: integer
+        quantity:
+          type: integer
+        type:
+          type: string
+          enum: [ CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT]
+    Ruleset:
+      type: object
+      properties:
+        boardSize:
+          type: integer
+        fleet:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipSpec'
+    PlayerBoard:
+      type: object
+      properties:
+        size:
+          type: integer
+        ships:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipPlaced'
+        shotsReceived:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coordinate'
+    GameCreatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    FleetDeploymentResponse:
+      type: object
+      properties:
+        ships:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipDeployment'
+      required:
+        - ships
+    ShipDeployment:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT ]
+        coordinates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coordinate'
+      required:
+        - type
+        - coordinates
+    ShotResultResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          enum: [HIT, MISS, SUNK]
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message

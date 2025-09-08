@@ -1,3 +1,3 @@
 ```
-mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dapp.context-path-folder-name=.deepstrike2"
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dapp.context.player-id=Username"
 ```

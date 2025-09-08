@@ -3,6 +3,7 @@ package dev.thiagooliveira.deepstrike.domain;
 import dev.thiagooliveira.deepstrike.domain.board.PlayerBoard;
 import dev.thiagooliveira.deepstrike.domain.board.ShotResult;
 import dev.thiagooliveira.deepstrike.domain.event.*;
+import dev.thiagooliveira.deepstrike.domain.exception.DomainException;
 import dev.thiagooliveira.deepstrike.domain.rule.Ruleset;
 import dev.thiagooliveira.deepstrike.domain.ship.Ship;
 import java.time.OffsetDateTime;
@@ -16,6 +17,8 @@ public class Game {
   private final Ruleset rules;
   private final Map<PlayerId, PlayerBoard> boards = new HashMap<>();
   private final Set<PlayerId> readyPlayers = new HashSet<>();
+  private PlayerId player1;
+  private PlayerId player2;
   private PlayerId currentTurn;
   private GameStatus status = GameStatus.OPEN;
   private PlayerId winner;
@@ -56,10 +59,10 @@ public class Game {
   public void join(PlayerId playerId) {
     ensureStatus(GameStatus.OPEN);
     if (boards.containsKey(playerId)) {
-      throw new IllegalStateException("Player already joined");
+      throw DomainException.badRequest("player already joined");
     }
     if (boards.size() >= 2) {
-      throw new IllegalStateException("Game already full");
+      throw DomainException.badRequest("game already full");
     }
     apply(new PlayerJoined(id, playerId));
   }
@@ -73,7 +76,7 @@ public class Game {
   public void markReady(PlayerId playerId) {
     ensureStatus(GameStatus.SETUP);
     if (!boards.containsKey(playerId)) {
-      throw new IllegalStateException("Player not in game");
+      throw DomainException.badRequest("player not in game");
     }
     apply(new PlayerReady(id, playerId));
     if (readyPlayers.size() == 2) {
@@ -82,18 +85,17 @@ public class Game {
     }
   }
 
-  public void fireShot(PlayerId playerId, Coordinate target) {
+  public ShotResult fireShot(PlayerId playerId, Coordinate target) {
     ensureStatus(GameStatus.IN_PROGRESS);
     if (!Objects.equals(playerId, currentTurn)) {
-      throw new IllegalStateException("Not your turn");
+      throw DomainException.badRequest("not your turn");
     }
 
     var opponent =
         boards.keySet().stream().filter(p -> !p.equals(playerId)).findFirst().orElseThrow();
 
     PlayerBoard opponentBoard = boards.get(opponent);
-
-    ShotResult result = opponentBoard.registerShot(target);
+    ShotResult result = opponentBoard.previewShot(target);
 
     apply(new ShotFired(id, playerId, target));
     apply(new ShotResolved(id, playerId, target, result));
@@ -103,6 +105,8 @@ public class Game {
     } else {
       apply(new TurnStarted(id, opponent));
     }
+
+    return result;
   }
 
   public void markEventsCommitted() {
@@ -111,6 +115,14 @@ public class Game {
 
   public GameId getId() {
     return id;
+  }
+
+  public PlayerId getPlayer1() {
+    return player1;
+  }
+
+  public PlayerId getPlayer2() {
+    return player2;
   }
 
   public OffsetDateTime getCreatedAt() {
@@ -137,6 +149,14 @@ public class Game {
     return version;
   }
 
+  public Ruleset getRules() {
+    return rules;
+  }
+
+  public Map<PlayerId, PlayerBoard> getBoards() {
+    return Collections.unmodifiableMap(boards);
+  }
+
   private void applyFromHistory(DomainEvent e) {
     when(e);
     version++;
@@ -153,10 +173,12 @@ public class Game {
       case GameCreated ev -> {
         createdAt = ev.occurredAt().atOffset(ZoneOffset.UTC);
         boards.put(ev.hostPlayer(), new PlayerBoard(rules.boardSize()));
+        player1 = ev.hostPlayer();
         status = GameStatus.OPEN;
       }
       case PlayerJoined ev -> {
         boards.put(ev.joinedPlayerId(), new PlayerBoard(rules.boardSize()));
+        player2 = ev.joinedPlayerId();
         if (boards.size() == 2) {
           status = GameStatus.SETUP;
         }
@@ -175,19 +197,25 @@ public class Game {
         // apenas log, efeito real está em ShotResolved
       }
       case ShotResolved ev -> {
-        // atualizar estado do board já feito no PlayerBoard
+        var opponent =
+            boards.keySet().stream()
+                .filter(p -> !p.equals(ev.playerId()))
+                .findFirst()
+                .orElseThrow();
+        PlayerBoard opponentBoard = boards.get(opponent);
+        opponentBoard.registerShot(ev.coordinate(), ev.shotResult());
       }
       case GameWon ev -> {
         winner = ev.winner();
         status = GameStatus.FINISHED;
       }
-      default -> throw new IllegalStateException("Unhandled event " + e);
+      default -> throw DomainException.badRequest("unhandled event " + e);
     }
   }
 
   private void ensureStatus(GameStatus expected) {
     if (status != expected) {
-      throw new IllegalStateException("Expected status " + expected + " but was " + status);
+      throw DomainException.badRequest("expected status " + expected + " but was " + status);
     }
   }
 
@@ -196,7 +224,7 @@ public class Game {
     // (aqui simplificado) //TODO
     int expected = rules.fleet().stream().mapToInt(Ruleset.ShipSpec::quantity).sum();
     if (ships.size() != expected) {
-      throw new IllegalArgumentException("Fleet size mismatch");
+      throw DomainException.badRequest("fleet size mismatch");
     }
   }
 

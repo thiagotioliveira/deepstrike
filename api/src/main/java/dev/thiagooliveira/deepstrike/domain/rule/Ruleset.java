@@ -1,28 +1,28 @@
 package dev.thiagooliveira.deepstrike.domain.rule;
 
+import dev.thiagooliveira.deepstrike.domain.exception.DomainException;
 import dev.thiagooliveira.deepstrike.domain.ship.ShipType;
 import java.util.List;
-import java.util.Objects;
 
 /** Value Object that defines the rules of a match. */
 public record Ruleset(int boardSize, List<ShipSpec> fleet) {
 
   public Ruleset {
     if (boardSize < 5 || boardSize > 20) {
-      throw new IllegalArgumentException("Board size must be between 5 and 20");
+      throw DomainException.badRequest("board size must be between 5 and 20");
     }
-    Objects.requireNonNull(fleet, "Fleet cannot be null");
+    DomainException.requireNonNull(fleet, "fleet cannot be null");
     if (fleet.isEmpty()) {
-      throw new IllegalArgumentException("Fleet cannot be empty");
+      throw DomainException.badRequest("fleet cannot be empty");
     }
   }
 
   /** Specification of a ship type allowed in the game. */
   public record ShipSpec(ShipType type, int size, int quantity) {
     public ShipSpec {
-      Objects.requireNonNull(type, "ShipType cannot be null");
-      if (size <= 0) throw new IllegalArgumentException("Ship size must be > 0");
-      if (quantity <= 0) throw new IllegalArgumentException("Ship quantity must be > 0");
+      DomainException.requireNonNull(type, "shipType cannot be null");
+      if (size <= 0) throw DomainException.badRequest("ship size must be > 0");
+      if (quantity <= 0) throw DomainException.badRequest("ship quantity must be > 0");
     }
   }
 

@@ -31,8 +31,7 @@ class JoinGameUseCaseIT extends IntegrationTest {
     for (var event : eventsForCreateGame()) {
       gameId = repository.save(event).getAggregateId();
     }
-    var playerId = PlayerId.newId();
-    var command = new JoinGameCommand(new GameId(gameId), playerId);
+    var command = new JoinGameCommand(new GameId(gameId), new PlayerId(PLAYER_ID_2));
     var game = useCase.handle(command);
     assertNotNull(game);
     assertEquals(GameStatus.SETUP, game.getStatus());

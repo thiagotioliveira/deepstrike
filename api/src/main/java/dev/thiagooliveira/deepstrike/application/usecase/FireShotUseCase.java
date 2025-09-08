@@ -3,6 +3,7 @@ package dev.thiagooliveira.deepstrike.application.usecase;
 import dev.thiagooliveira.deepstrike.application.command.FireShotCommand;
 import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.Game;
+import dev.thiagooliveira.deepstrike.domain.board.ShotResult;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class FireShotUseCase {
@@ -15,7 +16,7 @@ public class FireShotUseCase {
     this.publisher = publisher;
   }
 
-  public Game handle(FireShotCommand command) {
+  public ShotResult handle(FireShotCommand command) {
 
     var pastEvents = eventStore.load(command.gameId().value());
     if (pastEvents.isEmpty()) {
@@ -23,7 +24,7 @@ public class FireShotUseCase {
     }
 
     Game game = Game.rehydrate(pastEvents);
-    game.fireShot(command.playerId(), command.target());
+    var result = game.fireShot(command.playerId(), command.target());
 
     var newEvents = game.getPendingEvents();
 
@@ -31,6 +32,6 @@ public class FireShotUseCase {
     newEvents.forEach(publisher::publishEvent);
 
     game.markEventsCommitted();
-    return game;
+    return result;
   }
 }

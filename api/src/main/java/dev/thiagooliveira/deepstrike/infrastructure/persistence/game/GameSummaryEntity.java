@@ -13,10 +13,10 @@ public class GameSummaryEntity {
   @Enumerated(EnumType.STRING)
   private GameStatus status;
 
-  private UUID hostPlayer;
-  private UUID opponentPlayer;
-  private UUID currentTurn;
-  private UUID winner;
+  private String player1;
+  private String player2;
+  private String currentTurn;
+  private String winner;
   private Instant createdAt;
   private Instant updatedAt;
 
@@ -46,35 +46,35 @@ public class GameSummaryEntity {
     this.status = status;
   }
 
-  public UUID getHostPlayer() {
-    return hostPlayer;
+  public String getPlayer1() {
+    return player1;
   }
 
-  public void setHostPlayer(UUID hostPlayer) {
-    this.hostPlayer = hostPlayer;
+  public void setPlayer1(String player1) {
+    this.player1 = player1;
   }
 
-  public UUID getOpponentPlayer() {
-    return opponentPlayer;
+  public String getPlayer2() {
+    return player2;
   }
 
-  public void setOpponentPlayer(UUID opponentPlayer) {
-    this.opponentPlayer = opponentPlayer;
+  public void setPlayer2(String player2) {
+    this.player2 = player2;
   }
 
-  public UUID getCurrentTurn() {
+  public String getCurrentTurn() {
     return currentTurn;
   }
 
-  public void setCurrentTurn(UUID currentTurn) {
+  public void setCurrentTurn(String currentTurn) {
     this.currentTurn = currentTurn;
   }
 
-  public UUID getWinner() {
+  public String getWinner() {
     return winner;
   }
 
-  public void setWinner(UUID winner) {
+  public void setWinner(String winner) {
     this.winner = winner;
   }
 

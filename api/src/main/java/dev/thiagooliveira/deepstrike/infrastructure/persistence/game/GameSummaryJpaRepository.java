@@ -11,9 +11,9 @@ public interface GameSummaryJpaRepository extends JpaRepository<GameSummaryEntit
 
   @Query(
       "SELECT g FROM GameSummaryEntity g "
-          + "WHERE (g.hostPlayer = :playerId OR g.opponentPlayer = :playerId) "
-          + "   OR g.status = :openStatus "
+          + "WHERE (g.player1 = :playerId OR g.player2 = :playerId) "
+          + "   OR g.status = :status "
           + "ORDER BY g.createdAt DESC")
   List<GameSummaryEntity> findGamesByPlayerOrOpen(
-      @Param("playerId") UUID playerId, @Param("openStatus") GameStatus openStatus);
+      @Param("playerId") String playerId, @Param("status") GameStatus status);
 }

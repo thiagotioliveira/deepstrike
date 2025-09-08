@@ -47,6 +47,15 @@ public class Ship implements Serializable {
     return hits.containsAll(footprint);
   }
 
+  /** Returns whether the ship would be sunk if this coordinate is hit, without mutating state. */
+  public boolean isSunkAfterHit(Coordinate target) {
+    Set<Coordinate> hypotheticalHits = new HashSet<>(hits);
+    if (footprint.contains(target)) {
+      hypotheticalHits.add(target);
+    }
+    return hypotheticalHits.containsAll(footprint);
+  }
+
   public ShipType getType() {
     return type;
   }

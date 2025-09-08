@@ -14,8 +14,8 @@ import java.util.UUID;
 public class TestUtil {
 
   public static final UUID GAME_ID = UUID.randomUUID();
-  public static final UUID PLAYER_ID_1 = UUID.randomUUID();
-  public static final UUID PLAYER_ID_2 = UUID.randomUUID();
+  public static final String PLAYER_ID_1 = "player1";
+  public static final String PLAYER_ID_2 = "player2";
 
   public static List<EventEntity> eventsForTurnStarted() {
     List<EventEntity> pastEvents = eventsForFleetPlacedForPlayer2();

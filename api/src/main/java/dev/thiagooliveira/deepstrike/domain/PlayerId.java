@@ -1,15 +1,12 @@
 package dev.thiagooliveira.deepstrike.domain;
 
+import dev.thiagooliveira.deepstrike.domain.exception.DomainException;
 import java.util.Objects;
-import java.util.UUID;
 
-public record PlayerId(UUID value) {
+public record PlayerId(String value) {
   public PlayerId {
-    Objects.requireNonNull(value);
-  }
-
-  public static PlayerId newId() {
-    return new PlayerId(UUID.randomUUID());
+    DomainException.requireNonNull(value);
+    value = value.trim();
   }
 
   @Override

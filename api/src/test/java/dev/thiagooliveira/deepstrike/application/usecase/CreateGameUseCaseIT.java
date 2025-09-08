@@ -1,5 +1,6 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
+import static dev.thiagooliveira.deepstrike.infrastructure.TestUtil.PLAYER_ID_1;
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.thiagooliveira.deepstrike.IntegrationTest;
@@ -19,7 +20,7 @@ class CreateGameUseCaseIT extends IntegrationTest {
 
   @Test
   void handle() {
-    var command = new CreateGameCommand(PlayerId.newId());
+    var command = new CreateGameCommand(new PlayerId(PLAYER_ID_1));
     var game = useCase.handle(command);
     assertNotNull(game);
     assertNotNull(game.getId());

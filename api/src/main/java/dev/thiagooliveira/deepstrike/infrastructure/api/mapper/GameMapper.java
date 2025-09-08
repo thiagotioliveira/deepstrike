@@ -1,19 +1,33 @@
 package dev.thiagooliveira.deepstrike.infrastructure.api.mapper;
 
 import dev.thiagooliveira.deepstrike.application.command.*;
+import dev.thiagooliveira.deepstrike.domain.FleetDeployment;
 import dev.thiagooliveira.deepstrike.domain.GameId;
 import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import dev.thiagooliveira.deepstrike.infrastructure.api.dto.*;
 import java.util.UUID;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface GameMapper {
 
+  @Mapping(target = "player1.id", source = "game.playerId1.value")
+  @Mapping(target = "player1.board", source = "game.player1Board")
+  @Mapping(target = "player2.id", source = "game.playerId2.value")
+  @Mapping(target = "player2.board", source = "game.player2Board")
+  GameDetailResponse toDetailResponse(dev.thiagooliveira.deepstrike.domain.GameDetail game);
+
   GameSummaryResponse toSummaryResponse(
       dev.thiagooliveira.deepstrike.domain.GameSummary gameSummary);
 
-  GameResponse toResponse(dev.thiagooliveira.deepstrike.domain.Game game);
+  GameCreatedResponse toResponse(dev.thiagooliveira.deepstrike.domain.Game game);
+
+  FleetDeploymentResponse toFleetDeploymentResponse(FleetDeployment fleetDeployment);
+
+  @Mapping(target = "result", source = "shotResult")
+  ShotResultResponse toShotResultResponse(
+      dev.thiagooliveira.deepstrike.domain.board.ShotResult shotResult);
 
   CreateGameCommand toCreateGameCommand(CreateGameRequest createGameRequest);
 
@@ -29,11 +43,11 @@ public interface GameMapper {
     return value.value();
   }
 
-  default UUID map(PlayerId value) {
+  default String map(PlayerId value) {
     return value != null ? value.value() : null;
   }
 
-  default PlayerId mapPlayerId(UUID value) {
+  default PlayerId mapPlayerId(String value) {
     return value != null ? new PlayerId(value) : null;
   }
 

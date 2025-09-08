@@ -1,6 +1,7 @@
 package dev.thiagooliveira.deepstrike.infrastructure.game;
 
 import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
+import dev.thiagooliveira.deepstrike.application.port.outbound.GameSummaryRepository;
 import dev.thiagooliveira.deepstrike.application.usecase.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -37,5 +38,15 @@ public class GameConfig {
   public FireShotUseCase fireShotUseCase(
       EventStore eventStore, ApplicationEventPublisher publisher) {
     return new FireShotUseCase(eventStore, publisher);
+  }
+
+  @Bean
+  public GetGameByIdUseCase getGameByIdUseCase(EventStore eventStore) {
+    return new GetGameByIdUseCase(eventStore);
+  }
+
+  @Bean
+  public GetGamesUseCase getGamesUseCase(GameSummaryRepository repository) {
+    return new GetGamesUseCase(repository);
   }
 }

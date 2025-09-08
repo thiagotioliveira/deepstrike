@@ -3,6 +3,7 @@ package dev.thiagooliveira.deepstrike.infrastructure.persistence.eventstore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.event.DomainEvent;
+import dev.thiagooliveira.deepstrike.domain.exception.DomainException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class EventStoreAdapter implements EventStore {
     List<EventEntity> current = repository.findByAggregateIdOrderByVersion(aggregateId);
 
     if (current.size() != expectedVersion) {
-      throw new IllegalStateException("Concurrency error: version mismatch");
+      throw DomainException.conflict("concurrency error: version mismatch");
     }
 
     int version = expectedVersion;
@@ -41,7 +42,7 @@ public class EventStoreAdapter implements EventStore {
 
         repository.save(entity);
       } catch (Exception e) {
-        throw new RuntimeException("Error serializing event", e);
+        throw new RuntimeException("error serializing event", e);
       }
     }
   }

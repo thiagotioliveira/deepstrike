@@ -25,7 +25,7 @@ public class GameSummaryProjection {
     GameSummaryEntity summary = new GameSummaryEntity();
     summary.setId(event.id().value());
     summary.setStatus(GameStatus.OPEN);
-    summary.setHostPlayer(event.hostPlayer().value());
+    summary.setPlayer1(event.hostPlayer().value());
     summary.setCreatedAt(event.occurredAt());
     summary.setUpdatedAt(event.occurredAt());
 
@@ -38,7 +38,7 @@ public class GameSummaryProjection {
         .findById(event.id().value())
         .ifPresent(
             summary -> {
-              summary.setOpponentPlayer(event.joinedPlayerId().value());
+              summary.setPlayer2(event.joinedPlayerId().value());
               summary.setStatus(GameStatus.SETUP);
               summary.setUpdatedAt(event.occurredAt());
               repository.save(summary);

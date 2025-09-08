@@ -65,23 +65,23 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: host_player
-                  type: UUID
+                  name: player1
+                  type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: opponent_player
-                  type: UUID
+                  name: player2
+                  type: VARCHAR(255)
                   constraints:
                     nullable: true
               - column:
                   name: current_turn
-                  type: UUID
+                  type: VARCHAR(255)
                   constraints:
                     nullable: true
               - column:
                   name: winner
-                  type: UUID
+                  type: VARCHAR(255)
                   constraints:
                     nullable: true
               - column:

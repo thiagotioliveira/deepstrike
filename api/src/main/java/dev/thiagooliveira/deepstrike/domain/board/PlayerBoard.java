@@ -1,6 +1,7 @@
 package dev.thiagooliveira.deepstrike.domain.board;
 
 import dev.thiagooliveira.deepstrike.domain.Coordinate;
+import dev.thiagooliveira.deepstrike.domain.exception.DomainException;
 import dev.thiagooliveira.deepstrike.domain.ship.Ship;
 import java.util.*;
 
@@ -10,25 +11,43 @@ public class PlayerBoard {
   private final Set<Coordinate> shotsReceived = new HashSet<>();
 
   public PlayerBoard(int size) {
-    if (size < 5 || size > 20) throw new IllegalArgumentException("Board size invalid");
+    if (size < 5 || size > 20) throw DomainException.badRequest("board size invalid");
     this.size = size;
   }
 
   public void placeFleet(List<Ship> fleet) {
     if (!ships.isEmpty()) {
-      throw new IllegalStateException("Fleet already placed");
+      throw DomainException.badRequest("fleet already placed");
     }
     validateFleet(fleet);
     ships.addAll(fleet);
   }
 
-  /** Registers a shot from the opponent. Returns shot result (MISS, HIT or SUNK). */
-  public ShotResult registerShot(Coordinate target) {
+  /** Preview shot result without mutating state. */
+  public ShotResult previewShot(Coordinate target) {
     if (!isWithinBounds(target)) {
-      throw new IllegalArgumentException("Shot out of bounds");
+      throw DomainException.badRequest("shot out of bounds");
     }
     if (shotsReceived.contains(target)) {
-      throw new IllegalStateException("Coordinate already shot");
+      throw DomainException.badRequest("coordinate already shot");
+    }
+
+    for (Ship ship : ships) {
+      if (ship.getFootprint().contains(target)) {
+        return ship.isSunkAfterHit(target) ? ShotResult.SUNK : ShotResult.HIT;
+      }
+    }
+
+    return ShotResult.MISS;
+  }
+
+  /** Registers a shot from the opponent and mutates the state. */
+  public ShotResult registerShot(Coordinate target, ShotResult expectedResult) {
+    if (!isWithinBounds(target)) {
+      throw DomainException.badRequest("shot out of bounds");
+    }
+    if (shotsReceived.contains(target)) {
+      throw DomainException.badRequest("coordinate already shot");
     }
 
     shotsReceived.add(target);
@@ -67,10 +86,10 @@ public class PlayerBoard {
     for (Ship ship : fleet) {
       for (Coordinate c : ship.getFootprint()) {
         if (!isWithinBounds(c)) {
-          throw new IllegalArgumentException("Ship out of bounds: " + ship.getType());
+          throw DomainException.badRequest("ship out of bounds: " + ship.getType());
         }
         if (!occupied.add(c)) {
-          throw new IllegalArgumentException("Ships overlapping at " + c);
+          throw DomainException.badRequest("ships overlapping at " + c);
         }
       }
     }

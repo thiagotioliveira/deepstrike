@@ -2,6 +2,7 @@ package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.PlaceFleetCommand;
 import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
+import dev.thiagooliveira.deepstrike.domain.FleetDeployment;
 import dev.thiagooliveira.deepstrike.domain.Game;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -15,7 +16,7 @@ public class PlaceFleetUseCase {
     this.publisher = publisher;
   }
 
-  public Game handle(PlaceFleetCommand command) {
+  public FleetDeployment handle(PlaceFleetCommand command) {
     var pastEvents = eventStore.load(command.gameId().value());
     if (pastEvents.isEmpty()) {
       throw new IllegalArgumentException("Game not found: " + command.gameId().value());
@@ -30,6 +31,9 @@ public class PlaceFleetUseCase {
     newEvents.forEach(publisher::publishEvent);
 
     game.markEventsCommitted();
-    return game;
+    return new FleetDeployment(
+        game.getBoards().get(command.playerId()).getShips().stream()
+            .map(s -> new FleetDeployment.ShipDeployment(s.getType().name(), s.getFootprint()))
+            .toList());
   }
 }
