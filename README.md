@@ -1,8 +1,22 @@
 # Deep Strike API
 
-> This is a API for Deep Strike, a game about battleship, classic game for **2 players**.
+> Monorepo for **Deep Strike**, a Battleship-inspired game for **2 players**
 
-### Overview
+---
+
+## 🗂️ Project Structure
+
+This project is organized as a **multi-module Maven build**:
+
+- **`api/`** → REST API exposing the game endpoints
+- **`spec/`** → OpenAPI specification (used to generate server and client stubs)
+- **`ctl/`** → Command-line client (Shell) to interact with the API
+
+---
+
+## 🎮 About the Game
+
+
 
 The game is played on four grids, two for each player. The grids are typically square, usually 10×10, and the individual squares in the grid are identified by letter and number. On one grid the player arranges ships and records the shots by the opponent. On the other grid, the player records their own shots.
 
@@ -22,6 +36,39 @@ After the ships have been positioned, the game proceeds in a series of rounds. I
 
 When all of the squares of a ship have been hit, the ship's owner announces the sinking of the Carrier, Submarine, Cruiser/Destroyer/Patrol Boat, or the titular Battleship. If all of a player's ships have been sunk, the game is over and their opponent wins.
 
+For more, check [Wikipedia](https://en.wikipedia.org/wiki/Battleship_(game))
 
+---
 
-[Wikipedia](https://en.wikipedia.org/wiki/Battleship_(game))
+## 🚀 Getting Started
+
+### Prerequisites
+- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+- [Docker](https://www.docker.com/)
+- [Maven](https://maven.apache.org/) (or use the included Maven Wrapper `./mvnw`)
+
+### Build All Modules
+
+```bash
+./mvnw clean install
+```
+
+### Run API Server
+
+```bash
+cd api/
+../mvnw spring-boot:run
+```
+
+API available at:
+👉 http://localhost:8080
+
+Swagger available at:
+👉 http://localhost:8080/swagger-ui/index.html
+
+### Run Client (Shell)
+
+```bash
+cd ctl/
+../mvnw spring-boot:run
+```

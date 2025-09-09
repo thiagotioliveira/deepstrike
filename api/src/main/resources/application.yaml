@@ -3,7 +3,7 @@ spring:
   docker:
     compose:
       enabled: true
-      file: api/compose.yaml
+      file: compose.yaml
   jpa:
     hibernate:
       ddl-auto: none
