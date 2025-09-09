@@ -2,6 +2,8 @@
 
 > Monorepo for **Deep Strike**, a Battleship-inspired game for **2 players**
 
+> ⚠️ **Note**: This project is a **Proof of Concept (PoC)** created to practice concepts such as **Domain-Driven Design (DDD)**, **Clean Architecture**, **Event Sourcing**, and related software architecture patterns.  
+> It is not intended for production use.
 ---
 
 ## 🗂️ Project Structure
@@ -46,7 +48,11 @@ The API specification is defined using **OpenAPI 3.0**.
 
 We use the **[openapi-generator-maven-plugin](https://openapi-generator.tech/docs/plugins/#maven)** to generate Java classes for the API models and interfaces directly from the specification, ensuring consistency between the contract and the implementation.
 
-Base URL: `http://localhost:8080/api`
+API available at: 👉 http://localhost:8080
+
+Base URL: 👉 `http://localhost:8080/api`
+
+Swagger available at: 👉 http://localhost:8080/swagger-ui/index.html
 
 ### 🕹️ Endpoints
 
@@ -294,12 +300,6 @@ Error handling is included — any API errors will be displayed in red in the te
 cd api/
 ../mvnw spring-boot:run
 ```
-
-API available at:
-👉 http://localhost:8080
-
-Swagger available at:
-👉 http://localhost:8080/swagger-ui/index.html
 
 ### Run Client (Shell)
 
