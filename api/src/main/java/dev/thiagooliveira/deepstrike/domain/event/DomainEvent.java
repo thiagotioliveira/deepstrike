@@ -12,8 +12,6 @@ public interface DomainEvent {
   /** Timestamp of when the event was generated. */
   Instant occurredAt();
 
-  /** Version of the aggregate at the time of the event (optional, useful for Event Sourcing). */
-  default int version() {
-    return 0;
-  }
+  /** Version of the aggregate at the time of the event */
+  int version();
 }

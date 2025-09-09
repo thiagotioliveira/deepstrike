@@ -6,10 +6,12 @@ import dev.thiagooliveira.deepstrike.application.usecase.*;
 import dev.thiagooliveira.deepstrike.domain.GameId;
 import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import dev.thiagooliveira.deepstrike.infrastructure.api.dto.*;
+import dev.thiagooliveira.deepstrike.infrastructure.api.exception.GameApiException;
 import dev.thiagooliveira.deepstrike.infrastructure.api.mapper.GameMapper;
 import dev.thiagooliveira.deepstrike.infrastructure.game.GameService;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,11 +35,11 @@ public class GameApi implements DefaultApi {
   }
 
   @Override
-  public ResponseEntity<GameDetailResponse> detail(UUID gameId) {
+  public ResponseEntity<GameDetailResponse> detail(UUID gameId, Integer version) {
     var game =
         gameService
-            .getGameById(new GetGameByIdCommand(new GameId(gameId)))
-            .orElseThrow(() -> new IllegalArgumentException("Game not found: " + gameId));
+            .getGameById(new GetGameByIdCommand(new GameId(gameId), Optional.ofNullable(version)))
+            .orElseThrow(() -> GameApiException.notFound("game not found"));
     return ResponseEntity.ok(gameMapper.toDetailResponse(game));
   }
 

@@ -8,4 +8,6 @@ public interface EventStore {
   void append(UUID aggregateId, List<DomainEvent> events, int expectedVersion);
 
   List<DomainEvent> load(UUID aggregateId);
+
+  List<DomainEvent> load(UUID aggregateId, int upToVersion);
 }

@@ -60,6 +60,11 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
+                  name: version
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
                   name: status
                   type: VARCHAR(20)
                   constraints:
@@ -94,3 +99,7 @@ databaseChangeLog:
                   type: TIMESTAMP
                   constraints:
                     nullable: false
+        - addUniqueConstraint:
+            tableName: game_summary
+            columnNames: id, version
+            constraintName: uq_game_summary_id_version

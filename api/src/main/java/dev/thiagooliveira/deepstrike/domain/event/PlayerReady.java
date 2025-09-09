@@ -5,10 +5,11 @@ import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import java.time.Instant;
 import java.util.UUID;
 
-public record PlayerReady(GameId id, PlayerId playerId, Instant occurredAt) implements DomainEvent {
+public record PlayerReady(GameId id, PlayerId playerId, Instant occurredAt, int version)
+    implements DomainEvent {
 
-  public PlayerReady(GameId id, PlayerId playerId) {
-    this(id, playerId, Instant.now());
+  public PlayerReady(GameId id, PlayerId playerId, int version) {
+    this(id, playerId, Instant.now(), version);
   }
 
   @Override

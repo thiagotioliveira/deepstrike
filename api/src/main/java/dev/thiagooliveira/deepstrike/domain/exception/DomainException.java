@@ -14,6 +14,10 @@ public class DomainException extends RuntimeException {
     return new DomainException(400, message);
   }
 
+  public static DomainException notFound(String message) {
+    return new DomainException(404, message);
+  }
+
   public static DomainException conflict(String message) {
     return new DomainException(409, message);
   }

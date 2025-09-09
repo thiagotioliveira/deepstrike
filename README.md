@@ -1,4 +1,4 @@
-# Deep Strike API
+# Deep Strike
 
 > Monorepo for **Deep Strike**, a Battleship-inspired game for **2 players**
 
@@ -40,6 +40,241 @@ For more, check [Wikipedia](https://en.wikipedia.org/wiki/Battleship_(game))
 
 ---
 
+## 🎮 DeepStrike API
+
+The API specification is defined using **OpenAPI 3.0**.
+
+We use the **[openapi-generator-maven-plugin](https://openapi-generator.tech/docs/plugins/#maven)** to generate Java classes for the API models and interfaces directly from the specification, ensuring consistency between the contract and the implementation.
+
+Base URL: `http://localhost:8080/api`
+
+### 🕹️ Endpoints
+
+1. Criar novo jogo
+
+`POST /games`
+
+Create a new game informing the hosted player.
+
+**Request Body:**
+```json
+{
+  "hostPlayerId": "player-id-username"
+}
+```
+
+Note: `player-id-username` is the username(string) of the player that will host the game.
+
+**Response:**
+
+* 201 Created → [GameCreatedResponse](spec/src/main/resources/openapi.yaml)
+
+2. List games
+
+`GET /games?playerId={playerId}`
+
+Lists all games, filtering by player.
+
+**Query params:**
+
+* playerId – returns only games where the player participates.
+
+**Response:**
+
+* 200 OK → [GameSummaryResponse[]](spec/src/main/resources/openapi.yaml)
+
+3. Get game details
+
+`GET /games/{gameId}?version={version}`
+
+Returns the game by id.
+
+**Path params:**
+
+* gameId (uuid) – game identifier
+
+**Query params:**
+
+* version (optional) – specific version of the aggregate
+
+**Response:**
+
+* 200 OK → [GameDetailResponse](spec/src/main/resources/openapi.yaml)
+
+4. Join in a game
+
+`POST /games/{gameId}/join`
+
+A player enters an open game.
+
+**Path params:**
+
+* gameId (uuid) – game identifier
+
+**Request Body:**
+```json
+{
+  "playerId": "player-id-username"
+}
+```
+Note: `player-id-username` is the username(string) of the player (it needs to be different from the host player).
+
+**Response:**
+
+* 204 No Content
+
+5. Place fleet
+
+`POST /games/{gameId}/fleet`
+
+The player positions his fleet on the board.
+
+**Path params:**
+
+* gameId (uuid) – game identifier
+
+**Request Body:**
+```json
+{
+  "playerId": "player-id-username",
+  "ships": [
+    {
+      "type": "DESTROYER",
+      "bow": { "x": 1, "y": 2 },
+      "orientation": "HORIZONTAL"
+    }
+  ]
+}
+```
+
+**Response:**
+
+* 200 OK  → [FleetDeploymentResponse](spec/src/main/resources/openapi.yaml)
+
+6. Mark as ready
+
+`POST /games/{gameId}/ready`
+
+The player indicates that he has finished positioning the fleet.
+
+**Path params:**
+
+* gameId (uuid) – game identifier
+
+**Request Body:**
+```json
+{
+  "playerId": "player-id-username"
+}
+```
+
+**Response:**
+
+* 204 No Content
+
+7. Shoot at the opponent
+
+`POST /games/{gameId}/shots`
+
+The player whose turn it is fires at an opponent's coordinate.
+
+**Path params:**
+
+* gameId (uuid) – game identifier
+
+**Request Body:**
+```json
+{
+  "playerId": "player-id-username",
+  "target": { "x": 3, "y": 4 }
+}
+```
+
+**Response:**
+
+* 200 OK  → [ShotResultResponse](spec/src/main/resources/openapi.yaml)
+
+
+⚠️ All endpoints can return errors in the format:
+
+```json
+{
+  "code": 400,
+  "message": "Error message"
+}
+```
+
+---
+
+## 🗄️ Database
+
+The project uses `PostgreSQL` as the database, running via Docker.
+Configuration is defined in the [compose.yaml](api/compose.yaml) file.
+
+Database containers are automatically managed by `Spring Boot Docker Compose Support`, so you don’t need to run docker compose up manually.
+When the application starts, Spring will ensure the Postgres container is up and running.
+
+Schema versioning is managed with `Liquibase`, ensuring controlled and reproducible database evolution.
+
+### 📑 Database schema
+
+#### **1. event_store**
+Stores the events for Event Sourcing.
+
+| Column       | Type         | Constraints                                      |
+|--------------|--------------|--------------------------------------------------|
+| id           | BIGSERIAL    | PK, auto increment                               |
+| aggregate_id | UUID         | NOT NULL                                         |
+| version      | INT          | NOT NULL                                         |
+| event_type   | VARCHAR(255) | NOT NULL                                         |
+| payload      | JSONB        | NOT NULL                                         |
+| occurred_at  | TIMESTAMP    | NOT NULL                                         |
+
+**Constraints and indexes:**
+- `uq_event_store_aggregate_version` → unique `(aggregate_id, version)`
+- `idx_event_store_aggregate_id` → index on `aggregate_id`
+
+#### **2. game_summary**
+Read model table for fast queries about the state of each game.
+
+| Column       | Type         | Constraints                      |
+|--------------|--------------|----------------------------------|
+| id           | UUID         | PK                               |
+| version      | INT          | NOT NULL                         |
+| status       | VARCHAR(20)  | NOT NULL                         |
+| player1      | VARCHAR(255) | NOT NULL                         |
+| player2      | VARCHAR(255) | NULL                             |
+| current_turn | VARCHAR(255) | NULL                             |
+| winner       | VARCHAR(255) | NULL                             |
+| created_at   | TIMESTAMP    | NOT NULL                         |
+| updated_at   | TIMESTAMP    | NOT NULL                         |
+
+**Constraints:**
+- `uq_game_summary_id_version` → unique `(id, version)`
+
+---
+
+## 🕹️ CLI Client (`ctl`)
+
+The **ctl** module provides an interactive command-line interface for playing the game.  
+It is powered by **Spring Shell**, which maps commands to the API endpoints, so players can create, join, and play games directly from the terminal.
+
+### Available Commands
+
+- `context` → Show current context (base URL, player ID)
+- `create` → Create a new game
+- `detail <gameId>` → Show details of a game by ID
+- `list` → List available games for the current player
+- `join <gameId>` → Join an existing game
+- `ready <gameId>` → Mark the current player as ready
+- `fire <gameId> <x> <y>` → Fire at a coordinate in the given game
+- `place-fleet-random <gameId>` → Place the fleet randomly
+- `place-fleet <gameId> <fleetFilePath>` → Place the fleet from a JSON file
+
+Error handling is included — any API errors will be displayed in red in the terminal.
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -70,5 +305,5 @@ Swagger available at:
 
 ```bash
 cd ctl/
-../mvnw spring-boot:run
+../mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-Dapp.context.player-id=${HERE_PUT_YOUR_USERNAME}"
 ```

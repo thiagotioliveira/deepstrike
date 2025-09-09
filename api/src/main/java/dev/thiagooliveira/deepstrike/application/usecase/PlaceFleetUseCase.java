@@ -1,6 +1,7 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.PlaceFleetCommand;
+import dev.thiagooliveira.deepstrike.application.exception.ApplicationException;
 import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.FleetDeployment;
 import dev.thiagooliveira.deepstrike.domain.Game;
@@ -19,7 +20,7 @@ public class PlaceFleetUseCase {
   public FleetDeployment handle(PlaceFleetCommand command) {
     var pastEvents = eventStore.load(command.gameId().value());
     if (pastEvents.isEmpty()) {
-      throw new IllegalArgumentException("Game not found: " + command.gameId().value());
+      throw ApplicationException.notFound("game not found");
     }
 
     Game game = Game.rehydrate(pastEvents);

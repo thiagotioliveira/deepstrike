@@ -1,6 +1,7 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.FireShotCommand;
+import dev.thiagooliveira.deepstrike.application.exception.ApplicationException;
 import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
 import dev.thiagooliveira.deepstrike.domain.Game;
 import dev.thiagooliveira.deepstrike.domain.board.ShotResult;
@@ -20,7 +21,7 @@ public class FireShotUseCase {
 
     var pastEvents = eventStore.load(command.gameId().value());
     if (pastEvents.isEmpty()) {
-      throw new IllegalArgumentException("Game not found: " + command.gameId());
+      throw ApplicationException.notFound("game not found");
     }
 
     Game game = Game.rehydrate(pastEvents);

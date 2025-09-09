@@ -529,7 +529,7 @@ public class TestUtil {
   private static EventEntity createEventEntityType(Class<? extends DomainEvent> clazz) {
     var entity = new EventEntity();
     entity.setAggregateId(GAME_ID);
-    entity.setEventType(clazz.getName());
+    entity.setEventType(clazz.getSimpleName());
     return entity;
   }
 }

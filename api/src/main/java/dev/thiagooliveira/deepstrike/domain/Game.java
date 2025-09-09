@@ -52,7 +52,7 @@ public class Game {
 
   public static Game create(PlayerId hostPlayer, Ruleset rules) {
     Game game = new Game(rules);
-    game.apply(new GameCreated(game.id, hostPlayer, rules));
+    game.apply(new GameCreated(game.id, hostPlayer, rules, 1));
     return game;
   }
 
@@ -64,13 +64,13 @@ public class Game {
     if (boards.size() >= 2) {
       throw DomainException.badRequest("game already full");
     }
-    apply(new PlayerJoined(id, playerId));
+    apply(new PlayerJoined(id, playerId, version + 1));
   }
 
   public void placeFleet(PlayerId playerId, List<Ship> ships) {
     ensureStatus(GameStatus.SETUP);
     validateFleet(ships);
-    apply(new FleetPlaced(id, playerId, ships));
+    apply(new FleetPlaced(id, playerId, ships, version + 1));
   }
 
   public void markReady(PlayerId playerId) {
@@ -78,10 +78,10 @@ public class Game {
     if (!boards.containsKey(playerId)) {
       throw DomainException.badRequest("player not in game");
     }
-    apply(new PlayerReady(id, playerId));
+    apply(new PlayerReady(id, playerId, version + 1));
     if (readyPlayers.size() == 2) {
       var firstTurn = chooseFirstTurn();
-      apply(new TurnStarted(id, firstTurn));
+      apply(new TurnStarted(id, firstTurn, version + 1));
     }
   }
 
@@ -97,13 +97,13 @@ public class Game {
     PlayerBoard opponentBoard = boards.get(opponent);
     ShotResult result = opponentBoard.previewShot(target);
 
-    apply(new ShotFired(id, playerId, target));
-    apply(new ShotResolved(id, playerId, target, result));
+    apply(new ShotFired(id, playerId, target, version + 1));
+    apply(new ShotResolved(id, playerId, target, result, version + 1));
 
     if (opponentBoard.allShipsSunk()) {
-      apply(new GameWon(id, playerId));
+      apply(new GameWon(id, playerId, version + 1));
     } else {
-      apply(new TurnStarted(id, opponent));
+      apply(new TurnStarted(id, opponent, version + 1));
     }
 
     return result;
@@ -165,7 +165,7 @@ public class Game {
   private void apply(DomainEvent event) {
     when(event);
     pendingEvents.add(event);
-    version++;
+    version = event.version();
   }
 
   private void when(DomainEvent e) {

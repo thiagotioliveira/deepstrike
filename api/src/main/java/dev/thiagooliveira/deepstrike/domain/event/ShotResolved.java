@@ -8,10 +8,16 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record ShotResolved(
-    GameId id, PlayerId playerId, Coordinate coordinate, ShotResult shotResult, Instant occurredAt)
+    GameId id,
+    PlayerId playerId,
+    Coordinate coordinate,
+    ShotResult shotResult,
+    Instant occurredAt,
+    int version)
     implements DomainEvent {
-  public ShotResolved(GameId id, PlayerId playerId, Coordinate coordinate, ShotResult shotResult) {
-    this(id, playerId, coordinate, shotResult, Instant.now());
+  public ShotResolved(
+      GameId id, PlayerId playerId, Coordinate coordinate, ShotResult shotResult, int version) {
+    this(id, playerId, coordinate, shotResult, Instant.now(), version);
   }
 
   @Override

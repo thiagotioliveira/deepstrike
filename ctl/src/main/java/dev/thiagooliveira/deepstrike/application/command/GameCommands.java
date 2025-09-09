@@ -58,7 +58,9 @@ public class GameCommands {
         () ->
             viewResolver
                 .gameDetailView()
-                .render(GameDetailViewModel.from(gameApi.detail(UUID.fromString(gameId)))));
+                .render(
+                    GameDetailViewModel.from(
+                        gameApi.detail(UUID.fromString(gameId), (Integer) null))));
   }
 
   @ShellMethod("List games")

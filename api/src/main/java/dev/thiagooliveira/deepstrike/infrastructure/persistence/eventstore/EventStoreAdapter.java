@@ -7,11 +7,14 @@ import dev.thiagooliveira.deepstrike.domain.exception.DomainException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class EventStoreAdapter implements EventStore {
+
+  private static final String PREFIX_EVENT_TYPE = "dev.thiagooliveira.deepstrike.domain.event.";
 
   private final EventJpaRepository repository;
   private final ObjectMapper objectMapper;
@@ -36,7 +39,7 @@ public class EventStoreAdapter implements EventStore {
         EventEntity entity = new EventEntity();
         entity.setAggregateId(aggregateId);
         entity.setVersion(++version);
-        entity.setEventType(event.getClass().getName());
+        entity.setEventType(event.getClass().getSimpleName());
         entity.setPayload(objectMapper.writeValueAsString(event));
         entity.setOccurredAt(event.occurredAt());
 
@@ -50,10 +53,21 @@ public class EventStoreAdapter implements EventStore {
   @Override
   public List<DomainEvent> load(UUID aggregateId) {
     List<EventEntity> entities = repository.findByAggregateIdOrderByVersion(aggregateId);
+    return convertToDomainEvents(entities);
+  }
+
+  @Override
+  public List<DomainEvent> load(UUID aggregateId, int upToVersion) {
+    List<EventEntity> entities =
+        repository.findByAggregateIdAndVersionLessThanEqualOrderByVersion(aggregateId, upToVersion);
+    return convertToDomainEvents(entities);
+  }
+
+  private @NotNull List<DomainEvent> convertToDomainEvents(List<EventEntity> entities) {
     List<DomainEvent> events = new ArrayList<>();
     for (EventEntity entity : entities) {
       try {
-        Class<?> clazz = Class.forName(entity.getEventType());
+        Class<?> clazz = Class.forName(PREFIX_EVENT_TYPE.concat(entity.getEventType()));
         DomainEvent event = (DomainEvent) objectMapper.readValue(entity.getPayload(), clazz);
         events.add(event);
       } catch (Exception e) {

@@ -7,11 +7,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public record FleetPlaced(GameId id, PlayerId playerId, List<Ship> ships, Instant occurredAt)
+public record FleetPlaced(
+    GameId id, PlayerId playerId, List<Ship> ships, Instant occurredAt, int version)
     implements DomainEvent {
 
-  public FleetPlaced(GameId id, PlayerId playerId, List<Ship> ships) {
-    this(id, playerId, ships, Instant.now());
+  public FleetPlaced(GameId id, PlayerId playerId, List<Ship> ships, int version) {
+    this(id, playerId, ships, Instant.now(), version);
   }
 
   @Override

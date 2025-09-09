@@ -23,7 +23,10 @@ public class GameSummaryRepositoryAdapter implements GameSummaryRepository {
         .map(
             g ->
                 new GameSummary(
-                    g.getId(), g.getStatus(), g.getCreatedAt().atOffset(ZoneOffset.UTC)))
+                    g.getId(),
+                    g.getStatus(),
+                    g.getCreatedAt().atOffset(ZoneOffset.UTC),
+                    g.getVersion()))
         .toList();
   }
 }

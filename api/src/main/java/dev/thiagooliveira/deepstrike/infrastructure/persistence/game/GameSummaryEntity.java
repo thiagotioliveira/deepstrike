@@ -10,6 +10,9 @@ import java.util.UUID;
 public class GameSummaryEntity {
   @Id private UUID id;
 
+  @Column(nullable = false)
+  private int version;
+
   @Enumerated(EnumType.STRING)
   private GameStatus status;
 
@@ -28,6 +31,14 @@ public class GameSummaryEntity {
 
   public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   public UUID getId() {
