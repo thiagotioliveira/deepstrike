@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 
 @ShellComponent
 public class GameCommands {
@@ -53,14 +54,14 @@ public class GameCommands {
   }
 
   @ShellMethod("Get detail of a game by id")
-  public String detail(String gameId) {
+  public String detail(
+      String gameId, @ShellOption(defaultValue = ShellOption.NULL) Integer version) {
     return executeCommand(
         () ->
             viewResolver
                 .gameDetailView()
                 .render(
-                    GameDetailViewModel.from(
-                        gameApi.detail(UUID.fromString(gameId), (Integer) null))));
+                    GameDetailViewModel.from(gameApi.detail(UUID.fromString(gameId), version))));
   }
 
   @ShellMethod("List games")

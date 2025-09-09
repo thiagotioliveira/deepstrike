@@ -17,7 +17,10 @@ public class GameDetailView implements View<GameDetailViewModel> {
     StringBuilder sb = new StringBuilder();
     sb.append("Game ").append(model.id()).append(" | Status: ").append(model.status()).append("\n");
     sb.append("Created At: ").append(model.createdAt()).append("\n");
-    sb.append(model.player1().getId()).append(" vs. ").append(model.player2().getId()).append("\n");
+    sb.append(model.player1().getId())
+        .append(" vs. ")
+        .append(model.player2() != null ? model.player2().getId() : "-")
+        .append("\n");
     sb.append("Turn: ")
         .append(model.currentTurn() != null ? model.currentTurn() : "-")
         .append(" | Winner: ")
@@ -29,11 +32,12 @@ public class GameDetailView implements View<GameDetailViewModel> {
         .append(BoardRenderer.renderAsString(model.player1().getBoard()))
         .append("\n");
 
-    sb.append(model.player2().getId())
-        .append("'s Board:\n")
-        .append(BoardRenderer.renderAsString(model.player2().getBoard()))
-        .append("\n");
-
+    if (model.player2() != null) {
+      sb.append(model.player2().getId())
+          .append("'s Board:\n")
+          .append(BoardRenderer.renderAsString(model.player2().getBoard()))
+          .append("\n");
+    }
     return sb.toString();
   }
 
