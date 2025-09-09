@@ -140,8 +140,6 @@ public class GameCommands {
       return command.get();
     } catch (GameApiException ex) {
       return RED + "API Error: " + ex.getMessage() + RESET;
-    } catch (Exception ex) {
-      return RED + "Unexpected error: " + ex.getMessage() + RESET;
     }
   }
 }
