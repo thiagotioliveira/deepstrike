@@ -70,7 +70,7 @@ It is not domain-heavy — its goal is just to **consume the API** and provide a
 
 ## 🔗 Communication Flow
 
-<img src="docs/architecture.svg" alt="Arquitetura DeepStrike" width="700" />
+<img src="docs/architecture.svg" alt="Arquitetura DeepStrike" width="400" />
 (from https://www.planttext.com/)
 
 ---
