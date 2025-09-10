@@ -84,41 +84,7 @@ It is not domain-heavy — its goal is just to **consume the API** and provide a
 
 ## 🔗 Communication Flow
 
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" style="font-family:sans-serif">
-  <rect x="50" y="50" width="200" height="100" rx="15" ry="15" fill="#4a90e2" stroke="#333" stroke-width="2"/>
-  <text x="150" y="110" text-anchor="middle" fill="white" font-size="16">CTL</text>
-  <text x="150" y="130" text-anchor="middle" fill="white" font-size="12">(Spring Shell)</text>
-
-  <rect x="350" y="50" width="250" height="200" rx="15" ry="15" fill="#50e3c2" stroke="#333" stroke-width="2"/>
-  <text x="475" y="80" text-anchor="middle" fill="black" font-size="16">API</text>
-  <text x="475" y="100" text-anchor="middle" fill="black" font-size="12">(Spring-boot)</text>
-
-  <rect x="370" y="120" width="100" height="40" fill="white" stroke="#333"/>
-  <text x="420" y="145" text-anchor="middle" font-size="12">Domain</text>
-  <rect x="490" y="120" width="100" height="40" fill="white" stroke="#333"/>
-  <text x="540" y="145" text-anchor="middle" font-size="12">Application</text>
-  <rect x="430" y="170" width="100" height="40" fill="white" stroke="#333"/>
-  <text x="480" y="195" text-anchor="middle" font-size="12">Infrastructure</text>
-
-  <rect x="700" y="50" width="150" height="150" rx="15" ry="15" fill="#f5a623" stroke="#333" stroke-width="2"/>
-  <text x="775" y="80" text-anchor="middle" fill="black" font-size="16">Database</text>
-  <text x="775" y="100" text-anchor="middle" fill="black" font-size="12">(Postgres)</text>
-
-  <rect x="720" y="120" width="110" height="30" fill="white" stroke="#333"/>
-  <text x="775" y="140" text-anchor="middle" font-size="12">Event Store</text>
-  <rect x="720" y="160" width="110" height="30" fill="white" stroke="#333"/>
-  <text x="775" y="180" text-anchor="middle" font-size="12">GameSummary</text>
-
-  <!-- Arrows -->
-  <line x1="250" y1="100" x2="350" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="600" y1="150" x2="700" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
-
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#333"/>
-    </marker>
-  </defs>
-</svg>
+![Architecture Diagram](docs/diagram.svg)
 
 ---
 
