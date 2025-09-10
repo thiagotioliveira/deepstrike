@@ -40,6 +40,55 @@ For more, check [Wikipedia](https://en.wikipedia.org/wiki/Battleship_(game))
 
 ---
 
+## 🏗️ Architecture
+
+The project is split into two main modules with different architectural approaches:
+
+### **API – Domain Core**
+
+The **`api/`** project implements the main domain logic of the game.  
+It follows **DDD (Domain-Driven Design)** principles, combined with **Event Sourcing** and **Clean Architecture**.
+
+- **DDD** → The game logic (entities, aggregates, value objects, services) is modeled around the **ubiquitous language** of Battleship.
+- **Event Sourcing** → Instead of persisting only the current state, all events (shots fired, fleet placed, player joined, etc.) are stored in an event store.
+    - This allows **navigating the full history of the game** from the beginning to the end, and even reconstructing the state at any past moment.
+- **Clean Architecture** → Clear separation between domain, application, and infrastructure layers.
+- **OpenAPI** → Contract-first development. API specification is defined in the `spec/` module and server stubs are generated with **openapi-generator-maven-plugin**.
+- **PostgreSQL + Liquibase** → Event store and read models persisted in Postgres, schema evolution managed with Liquibase.
+- **Docker** → Infra runs easily with containers (Postgres).
+
+### **CTL – Supporting Domain**
+
+The **`ctl/`** project is a **transaction script** style application.  
+It is not domain-heavy — its goal is just to **consume the API** and provide a CLI interface to the user.
+
+- Built with **Spring Shell**, mapping commands like `create`, `fire`, `join` to API calls.
+- Implements **error handling and colored outputs** for a better UX.
+- Lightweight architecture: just orchestrates requests/responses with minimal business logic.
+
+---
+
+## 🔗 Communication Flow
+
+```mermaid
+flowchart LR
+    subgraph CLI["CLI Client (ctl)"]
+        shell[Spring Shell]
+    end
+
+    subgraph API["API (Domain Core)"]
+        controller[REST Controllers]
+        service[Application & Domain Services]
+        eventstore[(Event Store - Postgres)]
+        readmodel[(Game Summary - Postgres)]
+    end
+
+    shell -->|HTTP (REST)| controller
+    controller --> service
+    service --> eventstore
+    service --> readmodel
+```
+
 ## 🎮 DeepStrike API
 
 The API specification is defined using **OpenAPI 3.0**.
