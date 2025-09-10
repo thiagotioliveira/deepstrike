@@ -199,6 +199,7 @@ The player positions his fleet on the board.
   ]
 }
 ```
+Note: ships property is optional. If not provided, the player will be asked to place the fleet randomly.
 
 **Response:**
 
@@ -347,7 +348,83 @@ You joined the game 4791b6c6-8b4c-4b73-99d9-b402156100f6
 ```
 
 * Player places the fleet
-* //TODO 
+
+```shell
+[deepstrike:>place-fleet 4791b6c6-8b4c-4b73-99d9-b402156100f6
+Board
+   A B C D E F G H I J 
+ 0 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ 1 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ 2 ~ █ ~ ~ ~ ~ ~ ~ ~ ~ 
+ 3 ~ █ ~ ~ ~ ~ ~ █ █ █ 
+ 4 ~ █ ~ █ █ █ █ ~ ~ ~ 
+ 5 ~ █ ~ ~ ~ ~ ~ █ █ █ 
+ 6 ~ █ ~ ~ ~ ~ ~ ~ ~ ~ 
+ 7 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ 8 █ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+ 9 █ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
+Fleet placed (5 ships)!
+```
+* Get details of the game
+
+```shell
+[deepstrike:>detail 4791b6c6-8b4c-4b73-99d9-b402156100f6
+Game 4791b6c6-8b4c-4b73-99d9-b402156100f6 | Status: Setup
+Created At: 2025-09-10T13:55:53.016564Z
+Thiago vs. Pedro
+Turn: - | Winner: -
+
+Thiago's Board               Pedro's Board
+   A B C D E F G H I J       A B C D E F G H I J 
+0  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    0  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+1  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    1  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+2  ~ █ ~ ~ ~ ~ ~ ~ ~ ~    2  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+3  ~ █ ~ ~ ~ ~ ~ █ █ █    3  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+4  ~ █ ~ █ █ █ █ ~ ~ ~    4  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+5  ~ █ ~ ~ ~ ~ ~ █ █ █    5  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+6  ~ █ ~ ~ ~ ~ ~ ~ ~ ~    6  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+7  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    7  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+8  █ ~ ~ ~ ~ ~ ~ ~ ~ ~    8  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+9  █ ~ ~ ~ ~ ~ ~ ~ ~ ~    9  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
+>>Pedro placed fleet for game
+```
+Note: note that the opponent's board is not rendered.
+
+* Player marks the game as ready
+
+```shell
+[deepstrike:>ready 4791b6c6-8b4c-4b73-99d9-b402156100f6
+You are ready!
+```
+
+* Player fires at the opponent
+
+```shell
+[deepstrike:>fire 4791b6c6-8b4c-4b73-99d9-b402156100f6 0 0
+Game a9215bdd-ab1d-4292-92a8-a4661a857bc9 | Status: In Progress
+Created At: 2025-09-10T13:55:53.016564Z
+Thiago vs. Pedro
+Turn: Pedro | Winner: -
+
+Thiago's Board               Pedro's Board
+   A B C D E F G H I J       A B C D E F G H I J 
+0  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    0  o ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+1  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    1  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+2  ~ █ ~ ~ ~ ~ ~ ~ ~ ~    2  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+3  ~ █ ~ ~ ~ ~ ~ █ █ █    3  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+4  ~ █ ~ █ █ █ █ ~ ~ ~    4  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+5  ~ █ ~ ~ ~ ~ ~ █ █ █    5  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+6  ~ █ ~ ~ ~ ~ ~ ~ ~ ~    6  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+7  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    7  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+8  █ ~ ~ ~ ~ ~ ~ ~ ~ ~    8  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+9  █ ~ ~ ~ ~ ~ ~ ~ ~ ~    9  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
+>>Pedro started turn
+
+Shot fired at (0,0) with result: MISS
+```
 
 ---
 

@@ -5,7 +5,6 @@ import dev.thiagooliveira.deepstrike.application.command.exception.GameApiExcept
 import dev.thiagooliveira.deepstrike.application.command.model.*;
 import dev.thiagooliveira.deepstrike.application.command.view.ViewResolver;
 import dev.thiagooliveira.deepstrike.application.config.AppContext;
-import dev.thiagooliveira.deepstrike.application.service.FleetGenerator;
 import dev.thiagooliveira.deepstrike.infrastructure.client.api.DefaultApi;
 import dev.thiagooliveira.deepstrike.infrastructure.client.dto.*;
 import java.util.UUID;
@@ -20,18 +19,12 @@ public class GameCommands {
 
   private final DefaultApi gameApi;
   private final AppContext context;
-  private final FleetGenerator fleetGenerator;
   private final ViewResolver viewResolver;
 
-  public GameCommands(
-      GameApiClientFactory factory,
-      AppContext context,
-      FleetGenerator fleetGenerator,
-      ViewResolver viewResolver) {
+  public GameCommands(GameApiClientFactory factory, AppContext context, ViewResolver viewResolver) {
     this.viewResolver = viewResolver;
     this.gameApi = factory.create(context.getBaseUrl());
     this.context = context;
-    this.fleetGenerator = fleetGenerator;
   }
 
   @ShellMethod("Get context")
@@ -117,28 +110,13 @@ public class GameCommands {
         });
   }
 
-  @ShellMethod("Place fleet randomly")
-  public String placeFleetRandom(UUID gameId) {
+  @ShellMethod("Place fleet random")
+  public String placeFleet(UUID gameId) {
     return executeCommand(
         () -> {
-          var ships = fleetGenerator.generateFromRandom();
           var fleetDeployment =
               gameApi.placeFleet(
-                  gameId, new PlaceFleetRequest().playerId(context.getPlayerId()).ships(ships));
-          return viewResolver
-              .placeFleetView()
-              .render(new PlaceFleetViewModel(fleetDeployment.getShips()));
-        });
-  }
-
-  @ShellMethod("Place fleet from a JSON file")
-  public String placeFleet(UUID gameId, String fleetFilePath) {
-    return executeCommand(
-        () -> {
-          var ships = fleetGenerator.generateFromFile(fleetFilePath);
-          var fleetDeployment =
-              gameApi.placeFleet(
-                  gameId, new PlaceFleetRequest().playerId(context.getPlayerId()).ships(ships));
+                  gameId, new PlaceFleetRequest().playerId(context.getPlayerId()).ships(null));
           return viewResolver
               .placeFleetView()
               .render(new PlaceFleetViewModel(fleetDeployment.getShips()));

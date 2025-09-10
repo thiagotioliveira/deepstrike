@@ -5,6 +5,7 @@ import dev.thiagooliveira.deepstrike.domain.board.ShotResult;
 import dev.thiagooliveira.deepstrike.domain.event.*;
 import dev.thiagooliveira.deepstrike.domain.exception.DomainException;
 import dev.thiagooliveira.deepstrike.domain.rule.Ruleset;
+import dev.thiagooliveira.deepstrike.domain.ship.Orientation;
 import dev.thiagooliveira.deepstrike.domain.ship.Ship;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -69,6 +70,9 @@ public class Game {
 
   public void placeFleet(PlayerId playerId, List<Ship> ships) {
     ensureStatus(GameStatus.SETUP);
+    if (ships == null || ships.isEmpty()) {
+      ships = generateRandom();
+    }
     validateFleet(ships);
     apply(new FleetPlaced(id, playerId, ships, version + 1));
   }
@@ -232,7 +236,46 @@ public class Game {
     }
   }
 
-  private void ensureStatus(GameStatus expected) {
+    private List<Ship> generateRandom() {
+        List<Ship> ships = new ArrayList<>();
+        Set<Coordinate> occupied = new HashSet<>(); // track all occupied coordinates
+        Random random = new Random();
+        int boardSize = rules.boardSize();
+
+        for (Ruleset.ShipSpec spec : rules.fleet()) {
+            int length = spec.size();
+            boolean placed = false;
+            while (!placed) {
+                Orientation orientation = random.nextBoolean() ? Orientation.HORIZONTAL : Orientation.VERTICAL;
+
+                int x = random.nextInt(boardSize);
+                int y = random.nextInt(boardSize);
+
+                // Adjust coordinates to fit inside the board
+                if (orientation == Orientation.HORIZONTAL && x + length > boardSize) {
+                    x = boardSize - length;
+                }
+                if (orientation == Orientation.VERTICAL && y + length > boardSize) {
+                    y = boardSize - length;
+                }
+
+                Coordinate bow = new Coordinate(x, y);
+                Ship candidate = new Ship(spec.type(), bow, orientation);
+
+                // Check for overlap
+                boolean overlaps = candidate.getFootprint().stream().anyMatch(occupied::contains);
+                if (overlaps) continue; // try a new position
+
+                // Mark all coordinates as occupied
+                occupied.addAll(candidate.getFootprint());
+                ships.add(candidate);
+                placed = true;
+            }
+        }
+        return ships;
+    }
+
+    private void ensureStatus(GameStatus expected) {
     if (status != expected) {
       throw DomainException.badRequest("expected status " + expected + " but was " + status);
     }
