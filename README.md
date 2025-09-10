@@ -71,22 +71,29 @@ It is not domain-heavy — its goal is just to **consume the API** and provide a
 ## 🔗 Communication Flow
 
 ```mermaid
-flowchart LR
-    subgraph CLI["CLI Client (ctl)"]
-        shell[Spring Shell]
+flowchart TD
+    subgraph Client
+        A[CLI Client (ctl)]
     end
 
-    subgraph API["API (Domain Core)"]
-        controller[REST Controllers]
-        service[Application & Domain Services]
-        eventstore[(Event Store - Postgres)]
-        readmodel[(Game Summary - Postgres)]
+    subgraph API["API Service (Spring Boot / Clean Arch)"]
+        B1[Command Handler]
+        B2[Domain Model (DDD)]
+        B3[Event Publisher]
+        B4[Query Handler]
     end
 
-    shell -->|HTTP (REST)| controller
-    controller --> service
-    service --> eventstore
-    service --> readmodel
+    subgraph Database["Postgres"]
+        C[(Event Store)]
+        D[(Game Summary Projection)]
+    end
+
+    A -->|"HTTP REST"| B1
+    B1 -->|"Executes business logic"| B2
+    B2 -->|"Emits Domain Events"| B3
+    B3 -->|"Append events"| C
+    B3 -->|"Update projections"| D
+    A -->|"Queries"| B4 -->|"Read models"| D
 ```
 
 ## 🎮 DeepStrike API
