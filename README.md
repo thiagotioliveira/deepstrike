@@ -326,8 +326,7 @@ It is powered by **Spring Shell**, which maps commands to the API endpoints, so 
 - `join <gameId>` → Join an existing game
 - `ready <gameId>` → Mark the current player as ready
 - `fire <gameId> <x> <y>` → Fire at a coordinate in the given game
-- `place-fleet-random <gameId>` → Place the fleet randomly
-- `place-fleet <gameId> <fleetFilePath>` → Place the fleet from a JSON file
+- `place-fleet <gameId>` → Place the fleet randomly
 
 Error handling is included — any API errors will be displayed in red in the terminal.
 
