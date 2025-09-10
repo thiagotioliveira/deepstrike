@@ -6,6 +6,18 @@
 > It is not intended for production use.
 ---
 
+## 📑 Table of Contents
+
+1. [Project Structure](#-project-structure)
+2. [About the Game](#-about-the-game)
+3. [Architecture](#-architecture)
+    - [API](#api--domain-core)
+    - [CTL](#ctl--supporting-domain)
+4. [DeepStrike API](#-deepstrike-api)
+5. [Database](#-database)
+6. [CLI Client (`ctl`)](#-cli-client-ctl)
+7. [Getting Started](#-getting-started)
+
 ## 🗂️ Project Structure
 
 This project is organized as a **multi-module Maven build**:
@@ -47,11 +59,14 @@ The project is split into two main modules with different architectural approach
 ### **API – Domain Core**
 
 The **`api/`** project implements the main domain logic of the game.  
-It follows **DDD (Domain-Driven Design)** principles, combined with **Event Sourcing** and **Clean Architecture**.
+It follows **DDD (Domain-Driven Design)** principles, combined with **Event Sourcing**, **CQRS**, and **Clean Architecture**.
 
 - **DDD** → The game logic (entities, aggregates, value objects, services) is modeled around the **ubiquitous language** of Battleship.
 - **Event Sourcing** → Instead of persisting only the current state, all events (shots fired, fleet placed, player joined, etc.) are stored in an event store.
     - This allows **navigating the full history of the game** from the beginning to the end, and even reconstructing the state at any past moment.
+- **CQRS** → Commands update the state by appending new events to the event store. Queries are answered by **read projections**, such as the `game_summary` table, which is updated asynchronously from events.
+    - This provides **fast queries** without reconstructing the aggregate.
+    - The domain model for writes remains clean and focused on business logic.
 - **Clean Architecture** → Clear separation between domain, application, and infrastructure layers.
 - **OpenAPI** → Contract-first development. API specification is defined in the `spec/` module and server stubs are generated with **openapi-generator-maven-plugin**.
 - **PostgreSQL + Liquibase** → Event store and read models persisted in Postgres, schema evolution managed with Liquibase.
@@ -66,7 +81,6 @@ It is not domain-heavy — its goal is just to **consume the API** and provide a
 - Implements **error handling and colored outputs** for a better UX.
 - Lightweight architecture: just orchestrates requests/responses with minimal business logic.
 
----
 
 ## 🔗 Communication Flow
 
