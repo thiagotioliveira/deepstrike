@@ -70,31 +70,10 @@ It is not domain-heavy — its goal is just to **consume the API** and provide a
 
 ## 🔗 Communication Flow
 
-```mermaid
-flowchart TD
-    subgraph Client
-        A[CLI Client (ctl)]
-    end
+<img src="docs/architecture.svg" alt="Arquitetura DeepStrike" width="700" />
+(from https://www.planttext.com/)
 
-    subgraph API["API Service (Spring Boot / Clean Arch)"]
-        B1[Command Handler]
-        B2[Domain Model (DDD)]
-        B3[Event Publisher]
-        B4[Query Handler]
-    end
-
-    subgraph Database["Postgres"]
-        C[(Event Store)]
-        D[(Game Summary Projection)]
-    end
-
-    A -->|"HTTP REST"| B1
-    B1 -->|"Executes business logic"| B2
-    B2 -->|"Emits Domain Events"| B3
-    B3 -->|"Append events"| C
-    B3 -->|"Update projections"| D
-    A -->|"Queries"| B4 -->|"Read models"| D
-```
+---
 
 ## 🎮 DeepStrike API
 
