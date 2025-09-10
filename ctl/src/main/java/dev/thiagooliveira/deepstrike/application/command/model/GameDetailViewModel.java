@@ -13,16 +13,18 @@ public record GameDetailViewModel(
     String winner,
     int boardSize,
     Player player1,
-    Player player2) {
+    Player player2,
+    String currentLog) {
   public static GameDetailViewModel from(GameDetailResponse dto) {
     return new GameDetailViewModel(
         dto.getId(),
         dto.getCreatedAt(),
-        dto.getStatus().toString(),
+        dto.getStatus(),
         dto.getCurrentTurn() != null ? dto.getCurrentTurn() : null,
         dto.getWinner() != null ? dto.getWinner() : null,
         dto.getRules().getBoardSize(),
         dto.getPlayer1(),
-        dto.getPlayer2());
+        dto.getPlayer2(),
+        dto.getCurrentLog());
   }
 }

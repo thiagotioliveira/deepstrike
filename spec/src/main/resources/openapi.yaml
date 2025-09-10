@@ -221,6 +221,8 @@ components:
           type: string
         winner:
           type: string
+        currentLog:
+          type: string
     Player:
       type: object
       properties:

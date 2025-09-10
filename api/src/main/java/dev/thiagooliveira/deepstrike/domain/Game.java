@@ -22,6 +22,7 @@ public class Game {
   private PlayerId currentTurn;
   private GameStatus status = GameStatus.OPEN;
   private PlayerId winner;
+  private String currentLog;
 
   private int version = 0;
 
@@ -33,8 +34,7 @@ public class Game {
   }
 
   private Game(Ruleset rules) {
-    this.id = GameId.newId();
-    this.rules = rules;
+    this(GameId.newId(), rules);
   }
 
   public static Game rehydrate(List<DomainEvent> events) {
@@ -141,6 +141,10 @@ public class Game {
     return currentTurn;
   }
 
+  public String getCurrentLog() {
+    return currentLog;
+  }
+
   public PlayerId getWinner() {
     return winner;
   }
@@ -179,6 +183,7 @@ public class Game {
         boards.put(ev.hostPlayer(), new PlayerBoard(rules.boardSize()));
         player1 = ev.hostPlayer();
         status = GameStatus.OPEN;
+        currentLog = ev.hostPlayer().value() + " created game " + id.value();
       }
       case PlayerJoined ev -> {
         boards.put(ev.joinedPlayerId(), new PlayerBoard(rules.boardSize()));
@@ -186,19 +191,23 @@ public class Game {
         if (boards.size() == 2) {
           status = GameStatus.SETUP;
         }
+        currentLog = ev.joinedPlayerId().value() + " joined game";
       }
       case FleetPlaced ev -> {
         boards.get(ev.playerId()).placeFleet(ev.ships());
+        currentLog = ev.playerId().value() + " placed fleet for game";
       }
       case PlayerReady ev -> {
         readyPlayers.add(ev.playerId());
+        currentLog = ev.playerId().value() + " marked ready for game";
       }
       case TurnStarted ev -> {
         currentTurn = ev.playerId();
         status = GameStatus.IN_PROGRESS;
+        currentLog = ev.playerId().value() + " started turn";
       }
       case ShotFired ev -> {
-        // apenas log, efeito real está em ShotResolved
+        currentLog = ev.playerId().value() + " shot in " + ev.coordinate();
       }
       case ShotResolved ev -> {
         var opponent =
@@ -208,10 +217,16 @@ public class Game {
                 .orElseThrow();
         PlayerBoard opponentBoard = boards.get(opponent);
         opponentBoard.registerShot(ev.coordinate(), ev.shotResult());
+        currentLog =
+            ev.playerId().value()
+                + (ev.shotResult().isHitOrSunk()
+                    ? " was successful in shooting " + ev.coordinate()
+                    : " missed the shot " + ev.coordinate());
       }
       case GameWon ev -> {
         winner = ev.winner();
         status = GameStatus.FINISHED;
+        currentLog = ev.winner().value() + " won game";
       }
       default -> throw DomainException.badRequest("unhandled event " + e);
     }

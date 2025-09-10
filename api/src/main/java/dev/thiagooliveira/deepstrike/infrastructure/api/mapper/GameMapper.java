@@ -18,6 +18,7 @@ public interface GameMapper {
   @Mapping(target = "player1.board", source = "game.player1.board")
   @Mapping(target = "player2.id", source = "game.player2.id.value")
   @Mapping(target = "player2.board", source = "game.player2.board")
+  @Mapping(target = "status", source = "game.status.displayName")
   GameDetailResponse toDetailResponse(GameDetail game);
 
   GameSummaryResponse toSummaryResponse(GameSummary gameSummary);

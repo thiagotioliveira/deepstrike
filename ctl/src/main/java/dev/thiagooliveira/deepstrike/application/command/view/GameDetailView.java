@@ -46,7 +46,7 @@ public class GameDetailView implements View<GameDetailViewModel> {
           .append(BoardRenderer.renderAsString(model.player1().getBoard(), model.boardSize()))
           .append("\n");
     }
-
+    sb.append("\n>>").append(model.currentLog()).append("\n");
     return sb.toString();
   }
 

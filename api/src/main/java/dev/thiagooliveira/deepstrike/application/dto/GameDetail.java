@@ -20,7 +20,8 @@ public record GameDetail(
     Player player1,
     Player player2,
     PlayerId currentTurn,
-    PlayerId winner) {
+    PlayerId winner,
+    String currentLog) {
 
   public GameDetail(Game game, PlayerId currentPlayerId) {
     this(
@@ -39,7 +40,8 @@ public record GameDetail(
                 ? map(game.getBoards().get(game.getPlayer2()))
                 : mapWithoutFootprint(game.getBoards().get(game.getPlayer2()))),
         game.getCurrentTurn(),
-        game.getWinner());
+        game.getWinner(),
+        game.getCurrentLog());
   }
 
   private static Board mapWithoutFootprint(PlayerBoard playerBoard) {
