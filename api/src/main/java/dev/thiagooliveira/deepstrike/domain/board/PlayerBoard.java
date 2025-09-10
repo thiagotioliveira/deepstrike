@@ -15,6 +15,12 @@ public class PlayerBoard {
     this.size = size;
   }
 
+  //  // TODO
+  //  public void placeFragment(Ship fragment, Coordinate shot) {
+  //    ships.add(fragment);
+  //      shotsReceived.add(shot);
+  //  }
+
   public void placeFleet(List<Ship> fleet) {
     if (!ships.isEmpty()) {
       throw DomainException.badRequest("fleet already placed");

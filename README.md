@@ -265,9 +265,13 @@ It is powered by **Spring Shell**, which maps commands to the API endpoints, so 
 
 ### Available Commands
 
+### Available Commands
+
 - `context` → Show current context (base URL, player ID)
 - `create` → Create a new game
-- `detail <gameId>` → Show details of a game by ID
+- `detail <gameId> [version]` → Show details of a game by ID.  
+  If `version` is provided, shows the game state at that version (navigating through the event history).  
+  Clears the screen before rendering the board.
 - `list` → List available games for the current player
 - `join <gameId>` → Join an existing game
 - `ready <gameId>` → Mark the current player as ready
@@ -276,6 +280,25 @@ It is powered by **Spring Shell**, which maps commands to the API endpoints, so 
 - `place-fleet <gameId> <fleetFilePath>` → Place the fleet from a JSON file
 
 Error handling is included — any API errors will be displayed in red in the terminal.
+
+
+Exemples:
+
+* Player creates a game
+```shell
+[deepstrike:>create
+Game had created with ID: 4791b6c6-8b4c-4b73-99d9-b402156100f6
+```
+
+* Player(opponent) joins a game
+
+```shell
+[deepstrike:>join 4791b6c6-8b4c-4b73-99d9-b402156100f6
+You joined the game 4791b6c6-8b4c-4b73-99d9-b402156100f6
+```
+
+* Player places the fleet
+* //TODO 
 
 ---
 

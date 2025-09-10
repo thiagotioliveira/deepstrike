@@ -1,11 +1,11 @@
 package dev.thiagooliveira.deepstrike.infrastructure.game;
 
 import dev.thiagooliveira.deepstrike.application.command.*;
+import dev.thiagooliveira.deepstrike.application.dto.FleetDeployment;
+import dev.thiagooliveira.deepstrike.application.dto.GameDetail;
+import dev.thiagooliveira.deepstrike.application.dto.GameSummary;
 import dev.thiagooliveira.deepstrike.application.usecase.*;
-import dev.thiagooliveira.deepstrike.domain.FleetDeployment;
 import dev.thiagooliveira.deepstrike.domain.Game;
-import dev.thiagooliveira.deepstrike.domain.GameDetail;
-import dev.thiagooliveira.deepstrike.domain.GameSummary;
 import dev.thiagooliveira.deepstrike.domain.board.ShotResult;
 import java.util.List;
 import java.util.Optional;

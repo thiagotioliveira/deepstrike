@@ -113,6 +113,10 @@ public class Game {
     pendingEvents.clear();
   }
 
+  public boolean isPlayerInGame(PlayerId playerId) {
+    return boards.containsKey(playerId);
+  }
+
   public GameId getId() {
     return id;
   }

@@ -6,6 +6,7 @@ public enum ShipType {
   DESTROYER("Destroyer", 3),
   SUBMARINE("Submarine", 3),
   PATROL_BOAT("Patrol Boat", 2);
+  // PART_OF_A_BOAT("-", 1);
 
   private final String displayName;
   private final int defaultSize;

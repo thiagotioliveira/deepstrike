@@ -1,9 +1,9 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.PlaceFleetCommand;
+import dev.thiagooliveira.deepstrike.application.dto.FleetDeployment;
 import dev.thiagooliveira.deepstrike.application.exception.ApplicationException;
 import dev.thiagooliveira.deepstrike.application.port.outbound.EventStore;
-import dev.thiagooliveira.deepstrike.domain.FleetDeployment;
 import dev.thiagooliveira.deepstrike.domain.Game;
 import org.springframework.context.ApplicationEventPublisher;
 

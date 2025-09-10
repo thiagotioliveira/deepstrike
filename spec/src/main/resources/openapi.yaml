@@ -60,6 +60,11 @@ paths:
             type: string
             format: uuid
         - in: query
+          name: playerId
+          required: true
+          schema:
+            type: string
+        - in: query
           name: version
           required: false
           schema:
@@ -265,7 +270,7 @@ components:
       properties:
         type:
           type: string
-          enum: [CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT]
+          enum: [ CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT ]
         bow:
           $ref: '#/components/schemas/Coordinate'
         orientation:
@@ -276,18 +281,10 @@ components:
       properties:
         type:
           type: string
-          enum: [ CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT ]
         footprint:
           type: array
           items:
             $ref: '#/components/schemas/Coordinate'
-        bow:
-          $ref: '#/components/schemas/Coordinate'
-        orientation:
-          type: string
-          enum: [ HORIZONTAL, VERTICAL ]
-        size:
-          type: integer
         hits:
           type: array
           items:
@@ -301,7 +298,7 @@ components:
           type: integer
         type:
           type: string
-          enum: [ CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT]
+          enum: [ CARRIER, BATTLESHIP, DESTROYER, SUBMARINE, PATROL_BOAT ]
     Ruleset:
       type: object
       properties:
@@ -314,8 +311,6 @@ components:
     PlayerBoard:
       type: object
       properties:
-        size:
-          type: integer
         ships:
           type: array
           items:

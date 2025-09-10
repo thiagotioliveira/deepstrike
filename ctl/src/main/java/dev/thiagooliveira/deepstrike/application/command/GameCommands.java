@@ -16,6 +16,7 @@ import org.springframework.shell.standard.ShellOption;
 
 @ShellComponent
 public class GameCommands {
+  private static final String CLEAR_SCREEN = "\033[H\033[2J";
 
   private final DefaultApi gameApi;
   private final AppContext context;
@@ -56,12 +57,18 @@ public class GameCommands {
   @ShellMethod("Get detail of a game by id")
   public String detail(
       String gameId, @ShellOption(defaultValue = ShellOption.NULL) Integer version) {
+    return detailByIdAndVersion(gameId, version);
+  }
+
+  private String detailByIdAndVersion(String gameId, Integer version) {
+    clearScreen();
     return executeCommand(
         () ->
             viewResolver
                 .gameDetailView()
                 .render(
-                    GameDetailViewModel.from(gameApi.detail(UUID.fromString(gameId), version))));
+                    GameDetailViewModel.from(
+                        gameApi.detail(UUID.fromString(gameId), context.getPlayerId(), version))));
   }
 
   @ShellMethod("List games")
@@ -104,7 +111,9 @@ public class GameCommands {
                   new ShootAtCoordinateRequest()
                       .playerId(context.getPlayerId())
                       .target(new Coordinate().x(x).y(y)));
-          return viewResolver.fireShotView().render(new FireShotViewModel(id, result, x, y));
+          return detailByIdAndVersion(gameId, null)
+              + "\n"
+              + viewResolver.fireShotView().render(new FireShotViewModel(id, result, x, y));
         });
   }
 
@@ -134,6 +143,11 @@ public class GameCommands {
               .placeFleetView()
               .render(new PlaceFleetViewModel(fleetDeployment.getShips()));
         });
+  }
+
+  private static void clearScreen() {
+    System.out.print(CLEAR_SCREEN);
+    System.out.flush();
   }
 
   private String executeCommand(Supplier<String> command) {

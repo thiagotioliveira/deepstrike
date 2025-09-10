@@ -35,10 +35,12 @@ public class GameApi implements DefaultApi {
   }
 
   @Override
-  public ResponseEntity<GameDetailResponse> detail(UUID gameId, Integer version) {
+  public ResponseEntity<GameDetailResponse> detail(UUID gameId, String playerId, Integer version) {
     var game =
         gameService
-            .getGameById(new GetGameByIdCommand(new GameId(gameId), Optional.ofNullable(version)))
+            .getGameById(
+                new GetGameByIdCommand(
+                    new GameId(gameId), new PlayerId(playerId), Optional.ofNullable(version)))
             .orElseThrow(() -> GameApiException.notFound("game not found"));
     return ResponseEntity.ok(gameMapper.toDetailResponse(game));
   }

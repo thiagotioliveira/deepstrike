@@ -1,8 +1,8 @@
 package dev.thiagooliveira.deepstrike.application.usecase;
 
 import dev.thiagooliveira.deepstrike.application.command.GetGamesCommand;
+import dev.thiagooliveira.deepstrike.application.dto.GameSummary;
 import dev.thiagooliveira.deepstrike.application.port.outbound.GameSummaryRepository;
-import dev.thiagooliveira.deepstrike.domain.GameSummary;
 import java.util.List;
 
 public class GetGamesUseCase {

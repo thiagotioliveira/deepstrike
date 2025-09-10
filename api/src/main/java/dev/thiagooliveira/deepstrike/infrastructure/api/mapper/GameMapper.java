@@ -1,7 +1,9 @@
 package dev.thiagooliveira.deepstrike.infrastructure.api.mapper;
 
 import dev.thiagooliveira.deepstrike.application.command.*;
-import dev.thiagooliveira.deepstrike.domain.FleetDeployment;
+import dev.thiagooliveira.deepstrike.application.dto.FleetDeployment;
+import dev.thiagooliveira.deepstrike.application.dto.GameDetail;
+import dev.thiagooliveira.deepstrike.application.dto.GameSummary;
 import dev.thiagooliveira.deepstrike.domain.GameId;
 import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import dev.thiagooliveira.deepstrike.infrastructure.api.dto.*;
@@ -12,14 +14,13 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface GameMapper {
 
-  @Mapping(target = "player1.id", source = "game.playerId1.value")
-  @Mapping(target = "player1.board", source = "game.player1Board")
-  @Mapping(target = "player2.id", source = "game.playerId2.value")
-  @Mapping(target = "player2.board", source = "game.player2Board")
-  GameDetailResponse toDetailResponse(dev.thiagooliveira.deepstrike.domain.GameDetail game);
+  @Mapping(target = "player1.id", source = "game.player1.id.value")
+  @Mapping(target = "player1.board", source = "game.player1.board")
+  @Mapping(target = "player2.id", source = "game.player2.id.value")
+  @Mapping(target = "player2.board", source = "game.player2.board")
+  GameDetailResponse toDetailResponse(GameDetail game);
 
-  GameSummaryResponse toSummaryResponse(
-      dev.thiagooliveira.deepstrike.domain.GameSummary gameSummary);
+  GameSummaryResponse toSummaryResponse(GameSummary gameSummary);
 
   GameCreatedResponse toResponse(dev.thiagooliveira.deepstrike.domain.Game game);
 

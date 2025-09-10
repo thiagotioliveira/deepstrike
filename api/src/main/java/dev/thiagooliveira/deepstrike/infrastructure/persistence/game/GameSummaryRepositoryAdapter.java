@@ -1,8 +1,8 @@
 package dev.thiagooliveira.deepstrike.infrastructure.persistence.game;
 
+import dev.thiagooliveira.deepstrike.application.dto.GameSummary;
 import dev.thiagooliveira.deepstrike.application.port.outbound.GameSummaryRepository;
 import dev.thiagooliveira.deepstrike.domain.GameStatus;
-import dev.thiagooliveira.deepstrike.domain.GameSummary;
 import dev.thiagooliveira.deepstrike.domain.PlayerId;
 import java.time.ZoneOffset;
 import java.util.List;
